@@ -97,9 +97,6 @@ const elements = {
   splashTitle: document.getElementById("splashTitle"),
   splashText: document.getElementById("splashText"),
   skipSplashBtn: document.getElementById("skipSplashBtn"),
-  timelineLabel: document.getElementById("timelineLabel"),
-  timelineTime: document.getElementById("timelineTime"),
-  splashProgress: document.getElementById("splashProgress"),
   homeBtn: document.getElementById("homeBtn"),
   presentationToggleBtn: document.getElementById("presentationToggleBtn"),
   langButtons: Array.from(document.querySelectorAll(".lang-btn")),
@@ -1220,7 +1217,7 @@ const state = {
   currentLang: "fr",
   currentScreen: "home",
   presentationMode: false,
-  splashStartedAt: 0,
+  splashTimer: null,
   splashDone: false,
   currentCourseSection: "learn",
   truthIndex: 0,
@@ -1290,6 +1287,10 @@ function finishSplash() {
   if (state.splashDone) {
     return;
   }
+  if (state.splashTimer) {
+    clearTimeout(state.splashTimer);
+    state.splashTimer = null;
+  }
   state.splashDone = true;
   elements.splashScreen.classList.add("done");
   elements.body.classList.remove("splash-active");
@@ -1297,28 +1298,13 @@ function finishSplash() {
 
 function startSplash() {
   if (skipSplash) {
-    elements.splashProgress.style.width = "100%";
-    elements.timelineTime.textContent = "10 / 10s";
     finishSplash();
     return;
   }
-  state.splashStartedAt = performance.now();
   elements.splashVideo.play().catch(() => {});
-  function tick(now) {
-    if (state.splashDone) {
-      return;
-    }
-    const elapsed = now - state.splashStartedAt;
-    const ratio = Math.min(elapsed / 10000, 1);
-    elements.splashProgress.style.width = `${ratio * 100}%`;
-    elements.timelineTime.textContent = `${Math.min(Math.floor(elapsed / 1000), 10)} / 10s`;
-    if (ratio >= 1) {
-      finishSplash();
-      return;
-    }
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
+  state.splashTimer = window.setTimeout(() => {
+    finishSplash();
+  }, 10000);
 }
 
 function renderGallery() {
@@ -4214,7 +4200,6 @@ function applyLanguage() {
   elements.splashTitle.textContent = ui.splashTitle;
   elements.splashText.textContent = ui.splashText;
   elements.skipSplashBtn.textContent = ui.skipIntro;
-  elements.timelineLabel.textContent = ui.timelineLabel;
   elements.globalBrandTitle.textContent = ui.brandTitle;
   elements.globalBrandSubtitle.textContent = ui.brandSubtitle;
   elements.homeBtn.textContent = ui.homeButton;
