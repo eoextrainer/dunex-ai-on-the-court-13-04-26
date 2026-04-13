@@ -167,7 +167,7 @@
   <div class="shell">
     <section class="panel">
       <h1>Browser Smoke Test</h1>
-      <p class="meta">This page loads <code>index.html?smoke=1&amp;skipSplash=1</code> in an iframe and runs a browser-native smoke suite against the gallery shell, the AI lesson app, the puzzle app, and all six original arcade games through the built-in test API.</p>
+      <p class="meta">This page loads <code>index.html?smoke=1&amp;skipSplash=1</code> in an iframe and runs a browser-native smoke suite against the gallery shell, the AI lesson app, the puzzle app, and all seven original arcade games through the built-in test API.</p>
       <div class="actions">
         <button class="primary" id="runBtn">Run Smoke Test</button>
         <a class="link-btn" href="./index.html" target="_blank" rel="noreferrer">Open Demo App</a>
@@ -269,7 +269,7 @@
       assert(heroVideo, "Missing looping hero video on the home screen.");
       const cards = frameDoc().querySelectorAll("#appGrid .app-card");
       const sourceLinks = frameDoc().querySelectorAll('#appGrid [data-source-repo="1"]');
-      assert(cards.length === 15, `Expected 15 gallery cards, found ${cards.length}.`);
+      assert(cards.length === 16, `Expected 16 gallery cards, found ${cards.length}.`);
       assert(sourceLinks.length === 7, `Expected 7 external source tiles, found ${sourceLinks.length}.`);
       return `Home gallery rendered ${cards.length} launch cards.`;
     }
@@ -340,7 +340,7 @@
 
     async function testArcadeGames() {
       const api = frameApi();
-      const games = ["quest", "metro", "hopper", "blade", "trail", "clash"];
+      const games = ["quest", "metro", "hopper", "serpent", "blade", "trail", "clash"];
       const snapshots = [];
       for (const gameId of games) {
         api.openApp(gameId);
@@ -359,6 +359,10 @@
           api.tickArcade(500);
           api.action();
           api.tickArcade(1600);
+        } else if (gameId === "serpent") {
+          api.tickArcade(900);
+          api.action();
+          api.tickArcade(700);
         } else if (gameId === "blade") {
           api.clickCanvas(520, 260);
           api.tickArcade(1800);
@@ -382,6 +386,9 @@
         if (gameId === "quest") {
           assert(typeof after.arcade.room === "number", "Quest Realm did not expose room progression state.");
           assert(typeof after.arcade.shards === "number", "Quest Realm did not expose relic shard state.");
+        }
+        if (gameId === "serpent") {
+          assert(after.arcade.length >= before.arcade.length, "Neon Snake length moved backwards unexpectedly.");
         }
         const title = frameDoc().getElementById("arcadeTitle").textContent.trim();
         assert(title.length > 0, `Game ${gameId} rendered an empty arcade title.`);

@@ -2,8 +2,8 @@ const params = new URLSearchParams(window.location.search);
 const smokeMode = params.get("smoke") === "1";
 const skipSplash = params.get("skipSplash") === "1";
 
-const APP_IDS = ["course", "puzzle", "quest", "metro", "hopper", "blade", "trail", "clash"];
-const ARCADE_IDS = ["quest", "metro", "hopper", "blade", "trail", "clash"];
+const APP_IDS = ["course", "puzzle", "quest", "metro", "hopper", "serpent", "blade", "trail", "clash"];
+const ARCADE_IDS = ["quest", "metro", "hopper", "serpent", "blade", "trail", "clash"];
 const EXTERNAL_SOURCE_TILES = [
   {
     id: "source-arcade16",
@@ -34,7 +34,7 @@ const EXTERNAL_SOURCE_TILES = [
     title: "SnakeGame",
     subtitle: "MIT-licensed GUI rendition of the classic Snake arcade game.",
     genre: "External Source",
-    description: "Repository by theadorabledev with Python-based Snake gameplay and classic controls.",
+    description: "Repository by theadorabledev with Python-based Snake gameplay that inspired the new native browser riff in this gallery.",
     url: "https://github.com/theadorabledev/SnakeGame"
   },
   {
@@ -677,7 +677,7 @@ const uiText = {
     home: {
       eyebrow: "Featured collection",
       title: "One polished home for lessons, originals, and curated arcade sources.",
-      text: "The gallery keeps the current AI workshop front and center, adds six original arcade experiences, and now includes a source shelf for external game repos.",
+      text: "The gallery keeps the current AI workshop front and center, adds seven original arcade experiences, and now includes a source shelf for external game repos.",
       featuredLaunch: "Open AI on the Court",
       featuredPuzzle: "Play Court Grid Sprint",
       smokeLink: "Open Browser Smoke Test",
@@ -696,6 +696,7 @@ const uiText = {
         { id: "quest", title: "Quest Realm", subtitle: "Top-down relic hunt with roaming sentries.", genre: "Adventure", description: "Collect relics, dodge patrols, and dash through the arena with keyboard or mouse guidance.", button: "Open" },
         { id: "metro", title: "Metro Brawler", subtitle: "Three-lane beatdown with timing and spacing.", genre: "Arcade Action", description: "Swap lanes, strike incoming rivals, and keep your guard while the pace rises.", button: "Open" },
         { id: "hopper", title: "Sky Hopper", subtitle: "Endless jump-and-dodge sprint above the skyline.", genre: "Platform Runner", description: "Jump over hazards, chain distance, and keep the rhythm through fast obstacles.", button: "Open" },
+        { id: "serpent", title: "Neon Snake", subtitle: "Gridline chase with fruit pickups and fast turns.", genre: "Arcade Classic", description: "Guide a growing neon serpent, chain fruit pickups, and boost without folding into your own trail.", button: "Open" },
         { id: "blade", title: "Forest Blade", subtitle: "Arena survival with short-range slashes and pickups.", genre: "Action Quest", description: "Move, slash, collect seeds, and survive pressure from all directions.", button: "Open" },
         { id: "trail", title: "Golden Trail", subtitle: "Lane-shifting rush with boosts, gates, and pickups.", genre: "Road Challenge", description: "Switch lanes, collect coins, and trigger boosts before the track closes in.", button: "Open" },
         { id: "clash", title: "City Clash", subtitle: "Arena shooter with movement, aim, and pressure control.", genre: "Arena Brawl", description: "Slide around the arena, fire at threats, and control the map with keyboard or mouse.", button: "Open" }
@@ -756,6 +757,16 @@ const uiText = {
         howText: "Clear obstacles and stay alive. Distance steadily increases your score.",
         buttons: ["Jump"]
       },
+      serpent: {
+        eyebrow: "Arcade classic",
+        title: "Neon Snake",
+        intro: "An original browser riff inspired by the MIT-licensed SnakeGame repo: collect fruit, grow longer, and survive tighter turns.",
+        action: "Boost",
+        reset: "Restart Snake",
+        controlsText: "Keyboard: arrows or WASD steer the serpent. Mouse: click around the head to turn toward that lane. Boost briefly speeds up the crawl.",
+        howText: "Collect fruit to grow and score. Walls and your own trail end the run, so plan each turn before you boost.",
+        buttons: ["Up", "Left", "Right", "Down", "Boost"]
+      },
       blade: {
         eyebrow: "Arena survival",
         title: "Forest Blade",
@@ -802,7 +813,7 @@ const uiText = {
     home: {
       eyebrow: "Collection a la une",
       title: "Une base elegante pour les cours, les originaux et une selection de sources arcade.",
-      text: "La galerie place l'atelier IA au premier plan, conserve le puzzle existant, ajoute six experiences originales, puis expose une etagere de repos sources externes.",
+      text: "La galerie place l'atelier IA au premier plan, conserve le puzzle existant, ajoute sept experiences originales, puis expose une etagere de repos sources externes.",
       featuredLaunch: "Ouvrir AI on the Court",
       featuredPuzzle: "Jouer a Court Grid Sprint",
       smokeLink: "Ouvrir le Smoke Test Navigateur",
@@ -821,6 +832,7 @@ const uiText = {
         { id: "quest", title: "Quest Realm", subtitle: "Collecte de reliques en vue du dessus avec sentinelles mobiles.", genre: "Aventure", description: "Ramasse les reliques, evite les patrouilles et dash a travers l'arene.", button: "Ouvrir" },
         { id: "metro", title: "Metro Brawler", subtitle: "Beatdown sur trois lignes avec rythme et placement.", genre: "Action Arcade", description: "Change de ligne, frappe les adversaires entrants et protege tes vies.", button: "Ouvrir" },
         { id: "hopper", title: "Sky Hopper", subtitle: "Course infinie au-dessus de la ville avec sauts rapides.", genre: "Plateforme", description: "Saute par-dessus les obstacles et garde le rythme a mesure que la vitesse monte.", button: "Ouvrir" },
+        { id: "serpent", title: "Neon Snake", subtitle: "Course en grille avec fruits, virages et pression croissante.", genre: "Classique Arcade", description: "Guide un serpent neon, enchaine les fruits et booste sans mordre ta propre trace.", button: "Ouvrir" },
         { id: "blade", title: "Forest Blade", subtitle: "Survie d'arene avec coups courts et collectes.", genre: "Action Quest", description: "Bouge, tranche, collecte des graines et tiens face a la pression.", button: "Ouvrir" },
         { id: "trail", title: "Golden Trail", subtitle: "Defi de route avec changements de voies, boost et pieces.", genre: "Road Challenge", description: "Glisse d'une voie a l'autre, collecte et boost avant que la piste se ferme.", button: "Ouvrir" },
         { id: "clash", title: "City Clash", subtitle: "Arme d'arene avec mouvement, tir et controle d'espace.", genre: "Arena Brawl", description: "Deplace-toi, vise au pointeur et brise la pression avant l'encerclement.", button: "Ouvrir" }
@@ -881,6 +893,16 @@ const uiText = {
         howText: "Passe les obstacles et reste en vie. La distance augmente ton score en continu.",
         buttons: ["Sauter"]
       },
+      serpent: {
+        eyebrow: "Classique arcade",
+        title: "Neon Snake",
+        intro: "Une reinterpretation navigateur originale inspiree du repo MIT SnakeGame : collecte les fruits, grandis et garde de la marge pour tourner.",
+        action: "Boost",
+        reset: "Relancer Snake",
+        controlsText: "Clavier : fleches ou WASD dirigent le serpent. Souris : clique autour de la tete pour changer de voie. Le boost accelere brievement la course.",
+        howText: "Chaque fruit ajoute de la longueur et du score. Les murs et ta propre trace terminent la manche, donc anticipe avant de booster.",
+        buttons: ["Haut", "Gauche", "Droite", "Bas", "Boost"]
+      },
       blade: {
         eyebrow: "Survie d'arene",
         title: "Forest Blade",
@@ -927,7 +949,7 @@ const uiText = {
     home: {
       eyebrow: "Coleccion destacada",
       title: "Una sola base para clases, originales y fuentes arcade curadas.",
-      text: "La galeria mantiene el taller de IA en primer plano, conserva el puzzle actual, suma seis experiencias originales y agrega una estanteria de repos externos.",
+      text: "La galeria mantiene el taller de IA en primer plano, conserva el puzzle actual, suma siete experiencias originales y agrega una estanteria de repos externos.",
       featuredLaunch: "Abrir AI on the Court",
       featuredPuzzle: "Jugar Court Grid Sprint",
       smokeLink: "Abrir prueba de humo",
@@ -946,6 +968,7 @@ const uiText = {
         { id: "quest", title: "Quest Realm", subtitle: "Busqueda de reliquias con vista superior y centinelas.", genre: "Aventura", description: "Recoge reliquias, evita patrullas y usa dash para cruzar la arena.", button: "Abrir" },
         { id: "metro", title: "Metro Brawler", subtitle: "Golpes en tres carriles con ritmo y posicion.", genre: "Accion Arcade", description: "Cambia de carril, golpea rivales y protege tus vidas.", button: "Abrir" },
         { id: "hopper", title: "Sky Hopper", subtitle: "Carrera infinita sobre el skyline con saltos rapidos.", genre: "Plataformas", description: "Salta obstaculos y manten el ritmo mientras la velocidad sube.", button: "Abrir" },
+        { id: "serpent", title: "Neon Snake", subtitle: "Persecucion en cuadrilla con fruta, giros y espacio justo.", genre: "Clasico Arcade", description: "Guia una serpiente neon, enlaza fruta y usa boost sin chocar con tu propio rastro.", button: "Abrir" },
         { id: "blade", title: "Forest Blade", subtitle: "Supervivencia en arena con cortes cortos y recogidas.", genre: "Action Quest", description: "Muevete, corta, recoge semillas y aguanta la presion.", button: "Abrir" },
         { id: "trail", title: "Golden Trail", subtitle: "Desafio de carretera con carriles, boost y monedas.", genre: "Road Challenge", description: "Cambia de carril, recoge y activa boosts antes de que la pista se cierre.", button: "Abrir" },
         { id: "clash", title: "City Clash", subtitle: "Shooter de arena con movimiento, punteria y control del espacio.", genre: "Arena Brawl", description: "Deslizate, apunta con el puntero y rompe la presion antes del cerco.", button: "Abrir" }
@@ -1006,6 +1029,16 @@ const uiText = {
         howText: "Supera obstaculos y sigue con vida. La distancia aumenta tu puntuacion.",
         buttons: ["Saltar"]
       },
+      serpent: {
+        eyebrow: "Clasico arcade",
+        title: "Neon Snake",
+        intro: "Una version original para navegador inspirada en el repo MIT SnakeGame: recoge fruta, crece y deja espacio para cada giro.",
+        action: "Boost",
+        reset: "Reiniciar Snake",
+        controlsText: "Teclado: flechas o WASD dirigen la serpiente. Raton: haz clic alrededor de la cabeza para cambiar de rumbo. El boost acelera por un instante.",
+        howText: "Cada fruta aumenta longitud y puntuacion. Los muros y tu propio rastro terminan la partida, asi que gira con tiempo antes de boostear.",
+        buttons: ["Arriba", "Izq", "Der", "Abajo", "Boost"]
+      },
       blade: {
         eyebrow: "Supervivencia arena",
         title: "Forest Blade",
@@ -1052,7 +1085,7 @@ const uiText = {
     home: {
       eyebrow: "Collezione in evidenza",
       title: "Una sola base per lezioni, originali e fonti arcade curate.",
-      text: "La galleria tiene il workshop IA al centro, conserva il puzzle attuale, aggiunge sei esperienze originali e apre uno scaffale di repository esterni.",
+      text: "La galleria tiene il workshop IA al centro, conserva il puzzle attuale, aggiunge sette esperienze originali e apre uno scaffale di repository esterni.",
       featuredLaunch: "Apri AI on the Court",
       featuredPuzzle: "Gioca a Court Grid Sprint",
       smokeLink: "Apri Smoke Test",
@@ -1071,6 +1104,7 @@ const uiText = {
         { id: "quest", title: "Quest Realm", subtitle: "Caccia alle reliquie vista dall'alto con sentinelle mobili.", genre: "Avventura", description: "Raccogli reliquie, evita pattuglie e usa il dash per attraversare l'arena.", button: "Apri" },
         { id: "metro", title: "Metro Brawler", subtitle: "Beatdown a tre corsie con ritmo e posizione.", genre: "Azione Arcade", description: "Cambia corsia, colpisci i rivali in arrivo e proteggi la tua salute.", button: "Apri" },
         { id: "hopper", title: "Sky Hopper", subtitle: "Corsa infinita sopra la skyline con salti veloci.", genre: "Platform Runner", description: "Salta ostacoli e mantieni il ritmo mentre la velocita cresce.", button: "Apri" },
+        { id: "serpent", title: "Neon Snake", subtitle: "Corsa su griglia con frutti, svolte strette e boost.", genre: "Classico Arcade", description: "Guida un serpente neon, concatena frutti e accelera senza chiuderti nella tua traccia.", button: "Apri" },
         { id: "blade", title: "Forest Blade", subtitle: "Sopravvivenza d'arena con tagli brevi e raccolte.", genre: "Action Quest", description: "Muoviti, colpisci, raccogli semi e reggi la pressione.", button: "Apri" },
         { id: "trail", title: "Golden Trail", subtitle: "Sfida stradale con corsie, boost e monete.", genre: "Road Challenge", description: "Sposta corsia, raccogli e attiva boost prima che la pista si chiuda.", button: "Apri" },
         { id: "clash", title: "City Clash", subtitle: "Shooter d'arena con movimento, mira e controllo dello spazio.", genre: "Arena Brawl", description: "Scivola nell'arena, mira col puntatore e rompi la pressione prima dell'accerchiamento.", button: "Apri" }
@@ -1130,6 +1164,16 @@ const uiText = {
         controlsText: "Tastiera: spazio o su per saltare. Mouse: clicca nel canvas per saltare.",
         howText: "Supera gli ostacoli e resta in vita. La distanza aumenta il tuo punteggio.",
         buttons: ["Salta"]
+      },
+      serpent: {
+        eyebrow: "Classico arcade",
+        title: "Neon Snake",
+        intro: "Una rilettura browser originale ispirata al repo MIT SnakeGame: raccogli frutti, allungati e lascia spazio a ogni svolta.",
+        action: "Boost",
+        reset: "Riavvia Snake",
+        controlsText: "Tastiera: frecce o WASD guidano il serpente. Mouse: clicca attorno alla testa per cambiare direzione. Il boost accelera per un attimo.",
+        howText: "Ogni frutto aumenta lunghezza e punteggio. Muri e tua stessa traccia chiudono la partita, quindi pianifica prima di accelerare.",
+        buttons: ["Su", "Sinistra", "Destra", "Giu", "Boost"]
       },
       blade: {
         eyebrow: "Sopravvivenza arena",
@@ -2601,6 +2645,182 @@ function createHopperGame() {
   };
 }
 
+function createSerpentGame() {
+  const cols = 18;
+  const rows = 10;
+  const cell = 40;
+  const offsetX = 80;
+  const offsetY = 78;
+  const stateSerpent = {
+    snake: [],
+    dir: { x: 1, y: 0 },
+    nextDir: { x: 1, y: 0 },
+    food: { x: 12, y: 5 },
+    score: 0,
+    stepClock: 0,
+    boost: 0,
+    gameOver: false,
+    status: ""
+  };
+
+  function occupied(x, y) {
+    return stateSerpent.snake.some((segment) => segment.x === x && segment.y === y);
+  }
+
+  function spawnFood() {
+    const freeCells = [];
+    for (let row = 0; row < rows; row += 1) {
+      for (let col = 0; col < cols; col += 1) {
+        if (!occupied(col, row)) {
+          freeCells.push({ x: col, y: row });
+        }
+      }
+    }
+    return freeCells.length > 0 ? choice(freeCells) : { x: 0, y: 0 };
+  }
+
+  function setDirection(x, y) {
+    if (stateSerpent.gameOver) {
+      return;
+    }
+    if (x === -stateSerpent.dir.x && y === -stateSerpent.dir.y) {
+      return;
+    }
+    stateSerpent.nextDir = { x, y };
+  }
+
+  function stepForward() {
+    stateSerpent.dir = { ...stateSerpent.nextDir };
+    const head = stateSerpent.snake[0];
+    const nextHead = { x: head.x + stateSerpent.dir.x, y: head.y + stateSerpent.dir.y };
+    const hitWall = nextHead.x < 0 || nextHead.x >= cols || nextHead.y < 0 || nextHead.y >= rows;
+    const hitSelf = occupied(nextHead.x, nextHead.y);
+    if (hitWall || hitSelf) {
+      stateSerpent.gameOver = true;
+      stateSerpent.status = "Run collapsed. Reset to try again.";
+      return;
+    }
+    stateSerpent.snake.unshift(nextHead);
+    if (nextHead.x === stateSerpent.food.x && nextHead.y === stateSerpent.food.y) {
+      stateSerpent.score += 20;
+      stateSerpent.food = spawnFood();
+      stateSerpent.status = "Fruit secured.";
+    } else {
+      stateSerpent.snake.pop();
+    }
+  }
+
+  return {
+    reset() {
+      stateSerpent.snake = [
+        { x: 8, y: 5 },
+        { x: 7, y: 5 },
+        { x: 6, y: 5 },
+        { x: 5, y: 5 }
+      ];
+      stateSerpent.dir = { x: 1, y: 0 };
+      stateSerpent.nextDir = { x: 1, y: 0 };
+      stateSerpent.food = { x: 12, y: 5 };
+      stateSerpent.score = 0;
+      stateSerpent.stepClock = 0;
+      stateSerpent.boost = 0;
+      stateSerpent.gameOver = false;
+      stateSerpent.status = currentUi().arcadeApps.serpent.howText;
+    },
+    update(dt) {
+      if (stateSerpent.gameOver) {
+        return;
+      }
+      stateSerpent.boost = Math.max(0, stateSerpent.boost - dt);
+      stateSerpent.stepClock += dt;
+      const stepInterval = stateSerpent.boost > 0 ? 0.075 : 0.14;
+      while (stateSerpent.stepClock >= stepInterval && !stateSerpent.gameOver) {
+        stateSerpent.stepClock -= stepInterval;
+        stepForward();
+      }
+    },
+    render(ctx, canvas) {
+      clearArcadeCanvas(ctx, canvas);
+      drawLabel(ctx, "Neon Snake", 28, 38, 28);
+      drawRoundedRect(ctx, offsetX - 10, offsetY - 10, cols * cell + 20, rows * cell + 20, 22, "rgba(255,255,255,0.04)");
+      ctx.strokeStyle = "rgba(255,255,255,0.08)";
+      ctx.lineWidth = 1;
+      for (let col = 0; col <= cols; col += 1) {
+        ctx.beginPath();
+        ctx.moveTo(offsetX + col * cell, offsetY);
+        ctx.lineTo(offsetX + col * cell, offsetY + rows * cell);
+        ctx.stroke();
+      }
+      for (let row = 0; row <= rows; row += 1) {
+        ctx.beginPath();
+        ctx.moveTo(offsetX, offsetY + row * cell);
+        ctx.lineTo(offsetX + cols * cell, offsetY + row * cell);
+        ctx.stroke();
+      }
+      ctx.fillStyle = "#ff8c1a";
+      ctx.beginPath();
+      ctx.arc(offsetX + stateSerpent.food.x * cell + cell / 2, offsetY + stateSerpent.food.y * cell + cell / 2, 11, 0, Math.PI * 2);
+      ctx.fill();
+      stateSerpent.snake.forEach((segment, index) => {
+        drawRoundedRect(
+          ctx,
+          offsetX + segment.x * cell + 3,
+          offsetY + segment.y * cell + 3,
+          cell - 6,
+          cell - 6,
+          10,
+          index === 0 ? "#7ac7ff" : "#1fd5c4"
+        );
+      });
+      drawLabel(ctx, `Length: ${stateSerpent.snake.length}`, 724, 36, 18, "#ffd166");
+    },
+    pointerDown(point) {
+      const head = stateSerpent.snake[0];
+      const headX = offsetX + head.x * cell + cell / 2;
+      const headY = offsetY + head.y * cell + cell / 2;
+      const dx = point.x - headX;
+      const dy = point.y - headY;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        setDirection(dx >= 0 ? 1 : -1, 0);
+      } else {
+        setDirection(0, dy >= 0 ? 1 : -1);
+      }
+    },
+    keyDown(key) {
+      if (key === "ArrowUp" || key === "w") setDirection(0, -1);
+      if (key === "ArrowLeft" || key === "a") setDirection(-1, 0);
+      if (key === "ArrowRight" || key === "d") setDirection(1, 0);
+      if (key === "ArrowDown" || key === "s") setDirection(0, 1);
+      if (key === " " || key === "Enter") this.action();
+    },
+    action() {
+      if (stateSerpent.gameOver) {
+        return;
+      }
+      stateSerpent.boost = 1.1;
+      stateSerpent.status = "Boost engaged.";
+    },
+    controls() {
+      return [
+        { label: currentUi().arcadeApps.serpent.buttons[0], onClick: () => setDirection(0, -1) },
+        { label: currentUi().arcadeApps.serpent.buttons[1], onClick: () => setDirection(-1, 0) },
+        { label: currentUi().arcadeApps.serpent.buttons[2], onClick: () => setDirection(1, 0) },
+        { label: currentUi().arcadeApps.serpent.buttons[3], onClick: () => setDirection(0, 1) },
+        { label: currentUi().arcadeApps.serpent.buttons[4], onClick: () => this.action(), wide: true }
+      ];
+    },
+    getScore() {
+      return stateSerpent.score;
+    },
+    getStatus() {
+      return stateSerpent.status;
+    },
+    debug() {
+      return { score: stateSerpent.score, length: stateSerpent.snake.length, gameOver: stateSerpent.gameOver };
+    }
+  };
+}
+
 function createBladeGame() {
   const stateBlade = { player: { x: 440, y: 260, tx: 440, ty: 260 }, enemies: [], seeds: [], spawn: 0.8, score: 0, lives: 3, slashCooldown: 0, status: "" };
   function refillSeeds() {
@@ -2991,6 +3211,7 @@ const arcadeFactories = {
   quest: createQuestGame,
   metro: createMetroGame,
   hopper: createHopperGame,
+  serpent: createSerpentGame,
   blade: createBladeGame,
   trail: createTrailGame,
   clash: createClashGame
