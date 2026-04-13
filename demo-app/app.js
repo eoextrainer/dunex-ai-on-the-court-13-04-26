@@ -4,6 +4,64 @@ const skipSplash = params.get("skipSplash") === "1";
 
 const APP_IDS = ["course", "puzzle", "quest", "metro", "hopper", "blade", "trail", "clash"];
 const ARCADE_IDS = ["quest", "metro", "hopper", "blade", "trail", "clash"];
+const EXTERNAL_SOURCE_TILES = [
+  {
+    id: "source-arcade16",
+    title: "Arcade 16",
+    subtitle: "MIT-licensed C++ collection of sixteen classical arcade games.",
+    genre: "External Source",
+    description: "Repository by borbrudar with a bundled multi-game arcade launcher and published releases.",
+    url: "https://github.com/borbrudar/Arcade_16"
+  },
+  {
+    id: "source-2d-arcade-games",
+    title: "2D Arcade Games",
+    subtitle: "JavaScript canvas pack featuring Snake and Pacman.",
+    genre: "External Source",
+    description: "Repository by FoxyRommel with browser-based arcade experiments and sound-backed retro presentation.",
+    url: "https://github.com/FoxyRommel/2D-Arcade-Games"
+  },
+  {
+    id: "source-ateri72",
+    title: "ATERI-72",
+    subtitle: "Unity project collecting five classical arcade game clones.",
+    genre: "External Source",
+    description: "Repository by abdullahdedeoglu focused on a multi-game Unity arcade bundle.",
+    url: "https://github.com/abdullahdedeoglu/ATERI-72"
+  },
+  {
+    id: "source-snakegame",
+    title: "SnakeGame",
+    subtitle: "MIT-licensed GUI rendition of the classic Snake arcade game.",
+    genre: "External Source",
+    description: "Repository by theadorabledev with Python-based Snake gameplay and classic controls.",
+    url: "https://github.com/theadorabledev/SnakeGame"
+  },
+  {
+    id: "source-gemika-arkanoid",
+    title: "Gemika Arkanoid",
+    subtitle: "MIT-licensed retro Arkanoid project with levels and leaderboard support.",
+    genre: "External Source",
+    description: "Repository by leonism centered on brick-breaking action with a standalone homepage and Python source.",
+    url: "https://github.com/leonism/Gemika-Arkanoid-Retro-Classical-Game"
+  },
+  {
+    id: "source-rebounce",
+    title: "Rebounce Game",
+    subtitle: "C++ paddle-and-ball arcade game with solo and dual-player modes.",
+    genre: "External Source",
+    description: "Repository by parth-v inspired by classical rebounding arcade gameplay and increasing difficulty.",
+    url: "https://github.com/parth-v/Rebounce_Game"
+  },
+  {
+    id: "source-vikings-yamb",
+    title: "Vikings YaMBdventure",
+    subtitle: "Java Android project mixing Yamb dice play with arcade-style coin collection.",
+    genre: "External Source",
+    description: "Repository by NevenaMladenovic with a Viking-themed hybrid game and multiplayer features.",
+    url: "https://github.com/NevenaMladenovic/VikingsYaMBdventure"
+  }
+];
 const COURSE_SECTIONS = ["learn", "builder", "lab", "truth", "quiz"];
 const COURSE_PANEL_MAP = {
   learn: "learnPanel",
@@ -618,8 +676,8 @@ const uiText = {
     presentationOff: "Exit Presentation",
     home: {
       eyebrow: "Featured collection",
-      title: "One polished home for lessons, puzzles, and future originals.",
-      text: "The gallery keeps the current AI workshop front and center and adds six original arcade experiences that run from the same shell.",
+      title: "One polished home for lessons, originals, and curated arcade sources.",
+      text: "The gallery keeps the current AI workshop front and center, adds six original arcade experiences, and now includes a source shelf for external game repos.",
       featuredLaunch: "Open AI on the Court",
       featuredPuzzle: "Play Court Grid Sprint",
       smokeLink: "Open Browser Smoke Test",
@@ -628,8 +686,10 @@ const uiText = {
       controls: "Controls",
       controlsValue: "Mouse + Keys",
       galleryTitle: "Featured Apps",
-      galleryIntro: "A clean launcher inspired by premium app storefronts, rebuilt with an original visual language for this project.",
-      chips: ["French First", "4 Languages", "Offline Ready"],
+      galleryIntro: "A clean launcher inspired by premium app storefronts, rebuilt with an original visual language and expanded with curated external source shelves.",
+      chips: ["French First", "4 Languages", "Offline Ready", "Source Shelf"],
+      externalBadge: "Source",
+      externalButton: "Open Repo",
       apps: [
         { id: "course", title: "Learn AI like a point guard", subtitle: "Interactive lesson studio for the one-hour basketball AI course.", genre: "Learning Lab", description: "Shot clock, bilingual teaching panels, prompt lab, truth checks, and a recap quiz.", button: "Launch" },
         { id: "puzzle", title: "Court Grid Sprint", subtitle: "Original block placement puzzle with line clears.", genre: "Original Puzzle", description: "Select one of three shapes, place it with mouse or keyboard, and chain clears to keep the board open.", button: "Play" },
@@ -741,8 +801,8 @@ const uiText = {
     presentationOff: "Quitter Presentation",
     home: {
       eyebrow: "Collection a la une",
-      title: "Une base elegante pour les cours, les puzzles et six nouveaux jeux originaux.",
-      text: "La galerie place l'atelier IA au premier plan, conserve le puzzle existant, et ajoute six experiences arcade originales dans le meme shell.",
+      title: "Une base elegante pour les cours, les originaux et une selection de sources arcade.",
+      text: "La galerie place l'atelier IA au premier plan, conserve le puzzle existant, ajoute six experiences originales, puis expose une etagere de repos sources externes.",
       featuredLaunch: "Ouvrir AI on the Court",
       featuredPuzzle: "Jouer a Court Grid Sprint",
       smokeLink: "Ouvrir le Smoke Test Navigateur",
@@ -751,8 +811,10 @@ const uiText = {
       controls: "Controles",
       controlsValue: "Souris + clavier",
       galleryTitle: "Apps a la une",
-      galleryIntro: "Un lanceur propre inspire des vitrines premium, reconstruit avec un langage visuel original pour ce projet.",
-      chips: ["Francais par defaut", "4 langues", "Pret hors ligne"],
+      galleryIntro: "Un lanceur propre inspire des vitrines premium, reconstruit avec un langage visuel original et complete par une etagere de sources externes.",
+      chips: ["Francais par defaut", "4 langues", "Pret hors ligne", "Source shelf"],
+      externalBadge: "Source",
+      externalButton: "Ouvrir le repo",
       apps: [
         { id: "course", title: "Learn AI like a point guard", subtitle: "Studio de cours interactif pour l'atelier basket et IA.", genre: "Learning Lab", description: "Chrono, panneaux d'enseignement, prompt lab, verifications et quiz final.", button: "Lancer" },
         { id: "puzzle", title: "Court Grid Sprint", subtitle: "Puzzle original de placement de formes avec effacement de lignes.", genre: "Original Puzzle", description: "Choisis une des trois formes, pose-la a la souris ou au clavier, puis enchaine les clears.", button: "Jouer" },
@@ -864,8 +926,8 @@ const uiText = {
     presentationOff: "Salir presentacion",
     home: {
       eyebrow: "Coleccion destacada",
-      title: "Una sola base para clases, puzzles y seis nuevos juegos originales.",
-      text: "La galeria mantiene el taller de IA en primer plano, conserva el puzzle actual y agrega seis experiencias arcade originales en la misma shell.",
+      title: "Una sola base para clases, originales y fuentes arcade curadas.",
+      text: "La galeria mantiene el taller de IA en primer plano, conserva el puzzle actual, suma seis experiencias originales y agrega una estanteria de repos externos.",
       featuredLaunch: "Abrir AI on the Court",
       featuredPuzzle: "Jugar Court Grid Sprint",
       smokeLink: "Abrir prueba de humo",
@@ -874,8 +936,10 @@ const uiText = {
       controls: "Controles",
       controlsValue: "Raton + teclado",
       galleryTitle: "Apps destacadas",
-      galleryIntro: "Un lanzador limpio inspirado en escaparates premium, reconstruido con un lenguaje visual original para este proyecto.",
-      chips: ["Frances por defecto", "4 idiomas", "Listo offline"],
+      galleryIntro: "Un lanzador limpio inspirado en escaparates premium, reconstruido con un lenguaje visual original y ampliado con una estanteria de fuentes externas.",
+      chips: ["Frances por defecto", "4 idiomas", "Listo offline", "Source shelf"],
+      externalBadge: "Fuente",
+      externalButton: "Abrir repo",
       apps: [
         { id: "course", title: "Learn AI like a point guard", subtitle: "Estudio de clase interactivo para el curso de IA y baloncesto.", genre: "Learning Lab", description: "Reloj de tiro, paneles didacticos, prompt lab, verificaciones y quiz final.", button: "Abrir" },
         { id: "puzzle", title: "Court Grid Sprint", subtitle: "Puzzle original de bloques con limpieza de lineas.", genre: "Original Puzzle", description: "Elige una pieza, colocala con raton o teclado y encadena limpiezas.", button: "Jugar" },
@@ -987,8 +1051,8 @@ const uiText = {
     presentationOff: "Esci presentazione",
     home: {
       eyebrow: "Collezione in evidenza",
-      title: "Una sola base per lezioni, puzzle e sei nuovi giochi originali.",
-      text: "La galleria tiene il workshop IA al centro, conserva il puzzle attuale e aggiunge sei esperienze arcade originali nello stesso shell.",
+      title: "Una sola base per lezioni, originali e fonti arcade curate.",
+      text: "La galleria tiene il workshop IA al centro, conserva il puzzle attuale, aggiunge sei esperienze originali e apre uno scaffale di repository esterni.",
       featuredLaunch: "Apri AI on the Court",
       featuredPuzzle: "Gioca a Court Grid Sprint",
       smokeLink: "Apri Smoke Test",
@@ -997,8 +1061,10 @@ const uiText = {
       controls: "Controlli",
       controlsValue: "Mouse + tastiera",
       galleryTitle: "App in evidenza",
-      galleryIntro: "Un launcher pulito ispirato alle vetrine premium, ricostruito con un linguaggio visivo originale per questo progetto.",
-      chips: ["Francese predefinito", "4 lingue", "Pronto offline"],
+      galleryIntro: "Un launcher pulito ispirato alle vetrine premium, ricostruito con un linguaggio visivo originale e ampliato con uno scaffale di sorgenti esterne.",
+      chips: ["Francese predefinito", "4 lingue", "Pronto offline", "Source shelf"],
+      externalBadge: "Fonte",
+      externalButton: "Apri repo",
       apps: [
         { id: "course", title: "Learn AI like a point guard", subtitle: "Studio di lezione interattivo per il corso basket e IA.", genre: "Learning Lab", description: "Cronometro di tiro, pannelli didattici, prompt lab, verifiche e quiz finale.", button: "Apri" },
         { id: "puzzle", title: "Court Grid Sprint", subtitle: "Puzzle originale di posizionamento blocchi con line clear.", genre: "Original Puzzle", description: "Scegli un pezzo, posizionalo con mouse o tastiera e concatena le linee pulite.", button: "Gioca" },
@@ -1202,6 +1268,7 @@ function startSplash() {
 
 function renderGallery() {
   const home = currentUi().home;
+  const galleryApps = [...home.apps, ...EXTERNAL_SOURCE_TILES];
   elements.galleryChips.innerHTML = "";
   home.chips.forEach((chip) => {
     const span = document.createElement("span");
@@ -1211,26 +1278,31 @@ function renderGallery() {
   });
 
   elements.appGrid.innerHTML = "";
-  home.apps.forEach((app) => {
+  galleryApps.forEach((app) => {
     const article = document.createElement("article");
     article.className = "app-card";
+    const actionMarkup = app.url
+      ? `<a class="gallery-btn" data-source-repo="1" href="${app.url}" target="_blank" rel="noreferrer">${home.externalButton}</a>`
+      : `<button class="gallery-btn primary" data-app="${app.id}">${app.button}</button>`;
+    const statusLabel = app.url ? home.externalBadge : "Live";
+    const statusClass = app.url ? "source" : "live";
     article.innerHTML = `
       <div class="tile-badges">
-        <span class="status-pill live">Live</span>
+        <span class="status-pill ${statusClass}">${statusLabel}</span>
         <span class="genre-pill">${app.genre}</span>
       </div>
       <h3>${app.title}</h3>
       <p class="app-subtitle">${app.subtitle}</p>
       <p>${app.description}</p>
       <div class="app-meta">
-        <button class="gallery-btn primary" data-app="${app.id}">${app.button}</button>
+        ${actionMarkup}
       </div>
     `;
     elements.appGrid.appendChild(article);
   });
 
   elements.homeLiveAppsValue.textContent = String(APP_IDS.length);
-  elements.homeGenresValue.textContent = String(new Set(home.apps.map((app) => app.genre)).size);
+  elements.homeGenresValue.textContent = String(new Set(galleryApps.map((app) => app.genre)).size);
   elements.homeControlsValue.textContent = home.controlsValue;
 }
 

@@ -553,6 +553,12 @@ a.hero-link:hover,
   border-color: rgba(100, 221, 142, 0.38);
 }
 
+.status-pill.source {
+  color: #dce8ff;
+  background: rgba(122, 199, 255, 0.16);
+  border-color: rgba(122, 199, 255, 0.34);
+}
+
 .genre-pill {
   color: var(--accent-3);
 }

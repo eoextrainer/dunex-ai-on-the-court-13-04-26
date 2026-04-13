@@ -268,7 +268,9 @@
       const heroVideo = frameDoc().querySelector(".home-hero-video");
       assert(heroVideo, "Missing looping hero video on the home screen.");
       const cards = frameDoc().querySelectorAll("#appGrid .app-card");
-      assert(cards.length === 8, `Expected 8 live app cards, found ${cards.length}.`);
+      const sourceLinks = frameDoc().querySelectorAll('#appGrid [data-source-repo="1"]');
+      assert(cards.length === 15, `Expected 15 gallery cards, found ${cards.length}.`);
+      assert(sourceLinks.length === 7, `Expected 7 external source tiles, found ${sourceLinks.length}.`);
       return `Home gallery rendered ${cards.length} launch cards.`;
     }
 
