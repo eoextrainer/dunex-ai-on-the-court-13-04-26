@@ -24,6 +24,8 @@ else
 	readonly REPO_ROOT="$(pwd)"
 fi
 
+readonly PAGES_DEPLOY_SCRIPT="$REPO_ROOT/scripts/deploy_pages_branch.sh"
+
 color_echo() {
 	local color="$1"
 	shift
@@ -162,6 +164,11 @@ deploy_latest_changes() {
 	fi
 
 	color_echo "$COLOR_GREEN" "Deployment push completed for branch: $current_branch"
+
+	if [[ -x "$PAGES_DEPLOY_SCRIPT" || -f "$PAGES_DEPLOY_SCRIPT" ]]; then
+		bash "$PAGES_DEPLOY_SCRIPT"
+		color_echo "$COLOR_GREEN" 'GitHub Pages branch updated from demo-app/.'
+	fi
 }
 
 sync_all_remote_branches() {

@@ -3,19 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI on the Court Smoke Test</title>
+  <title>Dunex Arcade Smoke Test</title>
   <style>
     :root {
       --bg: #07111d;
-      --panel: #11233d;
-      --panel-2: #0d1a2d;
       --line: rgba(255, 255, 255, 0.12);
       --text: #f5f9ff;
       --muted: #bbcae4;
       --good: #63dd8d;
       --bad: #ff6f7f;
       --warn: #ffd166;
-      --accent: #1fd5c4;
     }
 
     * {
@@ -51,13 +48,8 @@
       -webkit-backdrop-filter: blur(12px);
     }
 
-    h1,
-    h2,
-    p {
-      margin-top: 0;
-    }
-
-    .actions {
+    .actions,
+    .summary {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
@@ -91,12 +83,6 @@
 
     .meta {
       color: var(--muted);
-    }
-
-    .summary {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
     }
 
     .badge {
@@ -166,14 +152,14 @@
 
     iframe {
       width: 100%;
-      min-height: 860px;
+      min-height: 980px;
       border: 1px solid var(--line);
       border-radius: 20px;
       background: white;
     }
 
     code {
-      color: var(--accent);
+      color: #1fd5c4;
     }
   </style>
 </head>
@@ -181,7 +167,7 @@
   <div class="shell">
     <section class="panel">
       <h1>Browser Smoke Test</h1>
-      <p class="meta">This page loads <code>index.html</code> in an iframe and runs a lightweight browser-native smoke test against the live UI. It is designed for local rehearsal and GitHub Pages verification without adding a frontend toolchain.</p>
+      <p class="meta">This page loads <code>index.html?smoke=1&amp;skipSplash=1</code> in an iframe and runs a browser-native smoke suite against the gallery shell, the AI lesson app, the puzzle app, and all six original arcade games through the built-in test API.</p>
       <div class="actions">
         <button class="primary" id="runBtn">Run Smoke Test</button>
         <a class="link-btn" href="./index.html" target="_blank" rel="noreferrer">Open Demo App</a>
@@ -196,8 +182,8 @@
 
     <section class="panel">
       <h2>Live App Frame</h2>
-      <p class="meta">The smoke test drives the same browser UI that will be opened for class and deployed through GitHub Pages.</p>
-      <iframe id="appFrame" src="./index.html" title="AI on the Court demo app"></iframe>
+      <p class="meta">The smoke test uses the same UI that will run locally and on GitHub Pages.</p>
+      <iframe id="appFrame" src="./index.html?smoke=1&amp;skipSplash=1" title="Dunex Arcade demo app"></iframe>
     </section>
   </div>
 
@@ -217,8 +203,8 @@
       return frame.contentWindow.document;
     }
 
-    function frameWin() {
-      return frame.contentWindow;
+    function frameApi() {
+      return frame.contentWindow.__DUNEX_TEST_API__;
     }
 
     function assert(condition, message) {
@@ -255,10 +241,11 @@
     }
 
     async function reloadFrame() {
-      frame.src = `./index.html?ts=${Date.now()}`;
+      frame.src = `./index.html?smoke=1&skipSplash=1&ts=${Date.now()}`;
       await new Promise((resolve) => {
         frame.onload = () => resolve();
       });
+      await sleep(120);
     }
 
     async function runTest(name, fn, counters) {
@@ -273,96 +260,135 @@
       updateSummary(counters.pass, counters.fail, counters.fail > 0 ? "Completed with failures" : "Completed");
     }
 
-    async function testHeroLoads() {
-      const title = frameDoc().getElementById("heroTitle");
-      assert(title, "Missing hero title element.");
-      assert(title.textContent.trim().length > 0, "Hero title is empty.");
-      const navButtons = frameDoc().querySelectorAll(".nav-btn");
-      assert(navButtons.length === 5, `Expected 5 section buttons, found ${navButtons.length}.`);
-      return `Hero title is visible and ${navButtons.length} section buttons were rendered.`;
+    async function testHomeGallery() {
+      const api = frameApi();
+      assert(api, "Missing in-frame smoke test API.");
+      const home = frameDoc().getElementById("homeScreen");
+      assert(home.classList.contains("active"), "Home screen is not active after splash bypass.");
+      const cards = frameDoc().querySelectorAll("#appGrid .app-card");
+      assert(cards.length === 8, `Expected 8 live app cards, found ${cards.length}.`);
+      return `Home gallery rendered ${cards.length} launch cards.`;
     }
 
-    async function testLanguageToggle() {
-      const frButton = frameDoc().querySelector('.lang-btn[data-lang="fr"]');
-      assert(frButton, "Missing French language button.");
-      frButton.click();
-      await sleep(50);
-      const title = frameDoc().getElementById("heroTitle").textContent;
-      assert(/Decouvre l'IA/.test(title), `Unexpected French hero title: ${title}`);
-      const enButton = frameDoc().querySelector('.lang-btn[data-lang="en"]');
-      enButton.click();
-      await sleep(50);
-      return "Language toggle switched to French and back to English.";
-    }
-
-    async function testShotClock() {
-      const set14Btn = frameDoc().getElementById("set14Btn");
-      const toggleBtn = frameDoc().getElementById("toggleClockBtn");
-      const resetBtn = frameDoc().getElementById("resetClockBtn");
-      const display = frameDoc().getElementById("shotClockDisplay");
-      set14Btn.click();
+    async function testOpenCourseApp() {
+      frameApi().openApp("course");
       await sleep(60);
-      assert(display.textContent.trim() === "14", `Expected 14 after preset, got ${display.textContent.trim()}.`);
-      toggleBtn.click();
-      await sleep(1200);
-      const runningValue = Number(display.textContent.trim());
-      assert(runningValue <= 13, `Shot clock did not start, current value: ${runningValue}.`);
-      toggleBtn.click();
-      resetBtn.click();
-      await sleep(60);
-      assert(display.textContent.trim() === "14", `Expected 14 after reset, got ${display.textContent.trim()}.`);
-      return "Shot clock preset, start, pause, and reset all worked.";
+      const course = frameDoc().getElementById("courseScreen");
+      assert(course.classList.contains("active"), "Course screen did not open.");
+      const hero = frameDoc().getElementById("courseHeroTitle").textContent.trim();
+      assert(hero.length > 0, "Course hero title is empty.");
+      return `Course app opened with hero title: ${hero}.`;
     }
 
-    async function testPromptLab() {
-      frameDoc().querySelector('.nav-btn[data-target="lab"]').click();
+    async function testCourseInteraction() {
+      frameDoc().getElementById("set14Btn").click();
+      await sleep(60);
+      assert(frameDoc().getElementById("shotClockDisplay").textContent.trim() === "14", "Shot clock preset did not update to 14.");
+      frameDoc().querySelector('.nav-btn[data-section="lab"]').click();
       await sleep(60);
       frameDoc().getElementById("loadExampleBtn").click();
       frameDoc().getElementById("analyzePromptBtn").click();
       await sleep(80);
-      const analysis = frameDoc().getElementById("analysisOutput").textContent;
-      const improved = frameDoc().getElementById("improvedOutput").textContent;
       const score = Number(frameDoc().getElementById("promptScore").textContent.trim());
-      assert(/Score:|Score :/.test(analysis), `Prompt analysis did not render a score. Output: ${analysis}`);
-      assert(improved.length > 40, "Improved prompt output is too short.");
       assert(score > 0, `Prompt score did not update. Current value: ${score}.`);
-      return `Prompt analysis rendered with prompt score ${score}.`;
+      return `Course prompt analysis updated score to ${score}.`;
     }
 
-    async function testTruthCheck() {
-      frameDoc().querySelector('.nav-btn[data-target="truth"]').click();
-      await sleep(60);
-      const before = Number(frameDoc().getElementById("truthScore").textContent.trim());
-      frameDoc().getElementById("verifyBtn").click();
-      await sleep(60);
-      const feedback = frameDoc().getElementById("truthFeedback").textContent;
-      const after = Number(frameDoc().getElementById("truthScore").textContent.trim());
-      assert(feedback.length > 20, "Truth check feedback did not update.");
-      assert(after >= before, `Truth score moved backwards: before ${before}, after ${after}.`);
-      return `Truth check feedback rendered and score moved from ${before} to ${after}.`;
+    async function testLanguageToggle() {
+      const frButton = frameDoc().querySelector('.lang-btn[data-lang="fr"]');
+      frButton.click();
+      await sleep(80);
+      const titleFr = frameDoc().getElementById("homeTitle").textContent.trim();
+      assert(titleFr.length > 0, "French home title is empty.");
+      frameDoc().querySelector('.lang-btn[data-lang="en"]').click();
+      await sleep(80);
+      const titleEn = frameDoc().getElementById("homeTitle").textContent.trim();
+      assert(titleEn.length > 0 && titleEn !== titleFr, "English language switch did not update the home title.");
+      frameDoc().querySelector('.lang-btn[data-lang="es"]').click();
+      await sleep(80);
+      frameDoc().querySelector('.lang-btn[data-lang="it"]').click();
+      await sleep(80);
+      frameDoc().querySelector('.lang-btn[data-lang="fr"]').click();
+      await sleep(80);
+      return "Language toggle switched to French and back to English.";
     }
 
-    async function testQuiz() {
-      frameDoc().querySelector('.nav-btn[data-target="quiz"]').click();
+    async function testReturnHomeAndOpenPuzzle() {
+      frameDoc().getElementById("homeBtn").click();
       await sleep(60);
-      const options = frameDoc().querySelectorAll("#quizOptions .quiz-option");
-      assert(options.length === 4, `Expected 4 quiz options, found ${options.length}.`);
-      options[1].click();
+      frameApi().openApp("puzzle");
       await sleep(60);
-      const feedback = frameDoc().getElementById("quizFeedback").textContent;
-      assert(feedback.trim().length > 0, "Quiz feedback did not render.");
-      return "Quiz options rendered and answering produced feedback.";
+      const puzzle = frameDoc().getElementById("puzzleScreen");
+      assert(puzzle.classList.contains("active"), "Puzzle screen did not open.");
+      const pieces = frameDoc().querySelectorAll("#pieceRack .piece-btn");
+      assert(pieces.length === 3, `Expected 3 piece buttons, found ${pieces.length}.`);
+      return "Puzzle app opened with a 3-piece rack.";
+    }
+
+    async function testPuzzlePlacement() {
+      const placed = frameApi().placePuzzle(0, 0, 0);
+      assert(placed, "Puzzle API could not place the first deterministic piece.");
+      await sleep(80);
+      const score = Number(frameDoc().getElementById("puzzleScore").textContent.trim());
+      assert(score > 0, `Puzzle score did not increase after placement. Current value: ${score}.`);
+      return `Puzzle placement increased score to ${score}.`;
+    }
+
+    async function testArcadeGames() {
+      const api = frameApi();
+      const games = ["quest", "metro", "hopper", "blade", "trail", "clash"];
+      const snapshots = [];
+      for (const gameId of games) {
+        api.openApp(gameId);
+        await sleep(80);
+        const before = api.getSnapshot();
+        if (gameId === "quest") {
+          api.clickCanvas(220, 220);
+          api.tickArcade(1800);
+          api.action();
+          api.tickArcade(1200);
+        } else if (gameId === "metro") {
+          api.tickArcade(2200);
+          api.action();
+          api.tickArcade(1200);
+        } else if (gameId === "hopper") {
+          api.tickArcade(500);
+          api.action();
+          api.tickArcade(1600);
+        } else if (gameId === "blade") {
+          api.clickCanvas(520, 260);
+          api.tickArcade(1800);
+          api.action();
+          api.tickArcade(1200);
+        } else if (gameId === "trail") {
+          api.tickArcade(1600);
+          api.action();
+          api.tickArcade(1600);
+        } else if (gameId === "clash") {
+          api.tickArcade(1000);
+          api.clickCanvas(760, 180);
+          api.tickArcade(1800);
+          api.action();
+          api.tickArcade(1200);
+        }
+        const after = api.getSnapshot();
+        assert(after.screen === "arcade", `Game ${gameId} did not keep the arcade screen active.`);
+        assert(after.activeArcade === gameId, `Game ${gameId} did not stay selected.`);
+        assert(after.arcade && after.arcade.score >= before.arcade.score, `Game ${gameId} score moved backwards.`);
+        const title = frameDoc().getElementById("arcadeTitle").textContent.trim();
+        assert(title.length > 0, `Game ${gameId} rendered an empty arcade title.`);
+        snapshots.push(`${gameId}:${after.arcade.score}`);
+      }
+      return `Arcade games exercised successfully (${snapshots.join(", ")}).`;
     }
 
     async function testPresentationMode() {
-      const body = frameDoc().body;
-      const toggle = frameDoc().getElementById("presentationToggleBtn");
-      toggle.click();
+      frameDoc().getElementById("presentationToggleBtn").click();
       await sleep(60);
-      assert(body.classList.contains("presentation-mode"), "Presentation mode class was not added.");
-      toggle.click();
+      assert(frameDoc().body.classList.contains("presentation-mode"), "Presentation mode was not enabled.");
+      frameDoc().getElementById("presentationToggleBtn").click();
       await sleep(60);
-      assert(!body.classList.contains("presentation-mode"), "Presentation mode class was not removed.");
+      assert(!frameDoc().body.classList.contains("presentation-mode"), "Presentation mode was not disabled.");
       return "Presentation mode toggled on and off.";
     }
 
@@ -372,13 +398,14 @@
       runBtn.disabled = true;
       await reloadFrame();
       const counters = { pass: 0, fail: 0 };
-      await runTest("Hero and navigation render", testHeroLoads, counters);
+      await runTest("Home gallery renders", testHomeGallery, counters);
+      await runTest("Course app opens", testOpenCourseApp, counters);
+      await runTest("Course interactions work", testCourseInteraction, counters);
       await runTest("Language toggle works", testLanguageToggle, counters);
-      await runTest("Shot clock controls work", testShotClock, counters);
-      await runTest("Prompt lab analyzes input", testPromptLab, counters);
-      await runTest("Truth check updates feedback", testTruthCheck, counters);
-      await runTest("Quiz interaction renders feedback", testQuiz, counters);
-      await runTest("Presentation mode toggles cleanly", testPresentationMode, counters);
+      await runTest("Puzzle app opens", testReturnHomeAndOpenPuzzle, counters);
+      await runTest("Puzzle placement scores", testPuzzlePlacement, counters);
+      await runTest("All arcade games respond", testArcadeGames, counters);
+      await runTest("Presentation mode toggles", testPresentationMode, counters);
       updateSummary(counters.pass, counters.fail, counters.fail > 0 ? "Completed with failures" : "Completed");
       runBtn.disabled = false;
     }
