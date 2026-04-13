@@ -669,12 +669,12 @@ const uiText = {
       quest: {
         eyebrow: "Adventure drill",
         title: "Quest Realm",
-        intro: "Guide your runner through a small relic map. Collect every crystal, avoid sentries, and dash out of danger.",
-        action: "Dash",
-        reset: "Restart Realm",
-        controlsText: "Keyboard: arrows or WASD move. Mouse: click to set a route. Use Dash to burst forward.",
-        howText: "Collect all relics in the arena. Each relic is worth points. Enemy bumps cost momentum.",
-        buttons: ["Center", "Dash"]
+        intro: "Explore three connected realms, collect keys and relic shards, cut through roaming monsters, and reach the final altar.",
+        action: "Slash",
+        reset: "Restart Quest",
+        controlsText: "Keyboard: arrows or WASD move, space or enter swings your blade. Mouse: click to guide movement. Gates unlock after you secure the room key and clear the guardians.",
+        howText: "Sweep each realm for the key, defeat enemies, gather relic shards, and advance through the gate. The final chamber opens the altar once the last guardian falls.",
+        buttons: ["Refocus", "Slash"]
       },
       metro: {
         eyebrow: "Beatdown lane",
@@ -792,12 +792,12 @@ const uiText = {
       quest: {
         eyebrow: "Drill aventure",
         title: "Quest Realm",
-        intro: "Guide ton coureur sur une petite carte de reliques. Recupere chaque cristal, evite les sentinelles et dash hors du danger.",
-        action: "Dash",
-        reset: "Relancer Realm",
-        controlsText: "Clavier : fleches ou WASD pour bouger. Souris : clique pour fixer une destination. Utilise Dash pour accelerer.",
-        howText: "Recupere toutes les reliques de l'arene. Chaque relique rapporte des points. Les collisions avec les sentinelles ralentissent ton rythme.",
-        buttons: ["Centrer", "Dash"]
+        intro: "Explore trois royaumes relies, ramasse des cles et des eclats de relique, tranche les monstres, puis atteins l'autel final.",
+        action: "Trancher",
+        reset: "Relancer la Quete",
+        controlsText: "Clavier : fleches ou WASD pour bouger, espace ou entree pour frapper. Souris : clique pour guider le hero. Les portes s'ouvrent quand la cle de la zone est prise et les gardiens elimines.",
+        howText: "Nettoie chaque royaume, trouve la cle, recupere les eclats, puis franchis la porte. La derniere salle active l'autel quand le dernier gardien tombe.",
+        buttons: ["Recentre", "Trancher"]
       },
       metro: {
         eyebrow: "Ligne de baston",
@@ -915,12 +915,12 @@ const uiText = {
       quest: {
         eyebrow: "Drill aventura",
         title: "Quest Realm",
-        intro: "Guia a tu corredor por un pequeno mapa de reliquias. Recoge cada cristal, evita centinelas y usa dash para escapar del peligro.",
-        action: "Dash",
-        reset: "Reiniciar Realm",
-        controlsText: "Teclado: flechas o WASD mueven. Raton: clic para fijar ruta. Usa Dash para acelerar.",
-        howText: "Recoge todas las reliquias del mapa. Cada una da puntos. Los golpes con centinelas te frenan.",
-        buttons: ["Centrar", "Dash"]
+        intro: "Explora tres reinos conectados, recoge llaves y fragmentos de reliquia, corta monstruos y llega al altar final.",
+        action: "Cortar",
+        reset: "Reiniciar mision",
+        controlsText: "Teclado: flechas o WASD para moverte, espacio o enter para atacar. Raton: clic para guiar al heroe. Las puertas se abren al tomar la llave del area y limpiar a los guardianes.",
+        howText: "Limpia cada reino, encuentra la llave, recoge fragmentos y avanza por la puerta. La ultima sala activa el altar cuando cae el ultimo guardian.",
+        buttons: ["Recentrar", "Cortar"]
       },
       metro: {
         eyebrow: "Carril de pelea",
@@ -1038,12 +1038,12 @@ const uiText = {
       quest: {
         eyebrow: "Drill avventura",
         title: "Quest Realm",
-        intro: "Guida il tuo runner in una piccola mappa di reliquie. Raccogli ogni cristallo, evita le sentinelle e usa il dash per uscire dal pericolo.",
-        action: "Dash",
-        reset: "Riavvia Realm",
-        controlsText: "Tastiera: frecce o WASD per muoversi. Mouse: clicca per fissare una rotta. Usa Dash per scattare.",
-        howText: "Raccogli tutte le reliquie nell'arena. Ogni reliquia vale punti. Gli urti con le sentinelle ti fanno perdere ritmo.",
-        buttons: ["Centra", "Dash"]
+        intro: "Esplora tre reami collegati, raccogli chiavi e frammenti di reliquia, colpisci i mostri e raggiungi l'altare finale.",
+        action: "Colpisci",
+        reset: "Riavvia la Queste",
+        controlsText: "Tastiera: frecce o WASD per muoverti, spazio o invio per attaccare. Mouse: clicca per guidare l'eroe. I cancelli si aprono quando prendi la chiave e ripulisci i guardiani.",
+        howText: "Ripulisci ogni reame, trova la chiave, raccogli i frammenti e passa oltre il cancello. L'ultima camera attiva l'altare quando cade l'ultimo guardiano.",
+        buttons: ["Rifocalizza", "Colpisci"]
       },
       metro: {
         eyebrow: "Corsia di lotta",
@@ -1692,112 +1692,625 @@ function clearArcadeCanvas(ctx, canvas) {
 }
 
 function createQuestGame() {
-  const stateQuest = {
-    player: { x: 120, y: 260, tx: 120, ty: 260, hitCooldown: 0 },
-    gems: [],
-    enemies: [],
-    score: 0,
-    status: "",
-    lastMove: { x: 1, y: 0 }
+  const TILE = 40;
+  const COLS = 22;
+  const ROWS = 13;
+  const PLAYER_RADIUS = 13;
+  const ROOM_COLORS = [
+    { floorA: "#1e3a2a", floorB: "#244532", wall: "#556170", water: "#28608a", tree: "#2a6b47", shrub: "#2c7a57", accent: "#c8ec8f" },
+    { floorA: "#243149", floorB: "#2b3a55", wall: "#71839c", water: "#22557a", tree: "#45738f", shrub: "#3f607b", accent: "#f1d77d" },
+    { floorA: "#34263c", floorB: "#412d49", wall: "#8c769c", water: "#5e3b72", tree: "#5c8d7b", shrub: "#80547d", accent: "#ffd47b" }
+  ];
+  const ENEMY_STATS = {
+    slime: { speed: 62, hp: 1, radius: 12, score: 25, color: "#7ae39f" },
+    scout: { speed: 82, hp: 2, radius: 12, score: 40, color: "#ff8f70" },
+    brute: { speed: 52, hp: 3, radius: 15, score: 60, color: "#d36dff" }
   };
-  function refillGems() {
-    stateQuest.gems = Array.from({ length: 5 }, () => ({ x: randomBetween(140, 820), y: randomBetween(80, 440) }));
+
+  function makeTiles() {
+    return Array.from({ length: ROWS }, () => Array.from({ length: COLS }, () => ({ type: "floor", blocked: false })));
   }
-  function refillEnemies() {
-    stateQuest.enemies = Array.from({ length: 3 }, () => ({ x: randomBetween(200, 760), y: randomBetween(80, 440), vx: randomBetween(-90, 90), vy: randomBetween(-90, 90) }));
+
+  function surroundWalls(tiles) {
+    for (let col = 0; col < COLS; col += 1) {
+      tiles[0][col] = { type: "wall", blocked: true };
+      tiles[ROWS - 1][col] = { type: "wall", blocked: true };
+    }
+    for (let row = 0; row < ROWS; row += 1) {
+      tiles[row][0] = { type: "wall", blocked: true };
+      tiles[row][COLS - 1] = { type: "wall", blocked: true };
+    }
   }
+
+  function fillRect(tiles, col, row, width, height, type, blocked = true) {
+    for (let y = row; y < row + height; y += 1) {
+      for (let x = col; x < col + width; x += 1) {
+        if (y >= 0 && y < ROWS && x >= 0 && x < COLS) {
+          tiles[y][x] = { type, blocked };
+        }
+      }
+    }
+  }
+
+  function tileCenter(col, row) {
+    return { x: col * TILE + TILE / 2, y: row * TILE + TILE / 2 };
+  }
+
+  function buildQuestBlueprints() {
+    const rooms = [];
+
+    {
+      const tiles = makeTiles();
+      surroundWalls(tiles);
+      fillRect(tiles, 5, 2, 3, 2, "tree");
+      fillRect(tiles, 10, 7, 3, 2, "shrub");
+      fillRect(tiles, 14, 3, 3, 3, "water");
+      fillRect(tiles, 3, 8, 2, 2, "tree");
+      tiles[6][COLS - 1] = { type: "gate", blocked: false };
+      rooms.push({
+        title: "Moss Hollow",
+        start: { col: 2, row: 10 },
+        gate: { col: COLS - 1, row: 6, nextRoom: 1 },
+        key: { col: 3, row: 2 },
+        altar: null,
+        relics: [{ col: 4, row: 10 }, { col: 9, row: 5 }, { col: 18, row: 9 }],
+        grasses: [{ col: 6, row: 9 }, { col: 7, row: 9 }, { col: 15, row: 8 }, { col: 16, row: 8 }],
+        enemies: [
+          { col: 8, row: 4, type: "slime" },
+          { col: 17, row: 4, type: "scout" },
+          { col: 15, row: 9, type: "slime" }
+        ],
+        tiles
+      });
+    }
+
+    {
+      const tiles = makeTiles();
+      surroundWalls(tiles);
+      fillRect(tiles, 4, 2, 2, 6, "wall");
+      fillRect(tiles, 8, 1, 2, 4, "water");
+      fillRect(tiles, 8, 7, 2, 4, "water");
+      fillRect(tiles, 12, 2, 2, 6, "wall");
+      fillRect(tiles, 16, 3, 3, 3, "water");
+      fillRect(tiles, 16, 8, 2, 2, "shrub");
+      tiles[0][11] = { type: "gate", blocked: false };
+      rooms.push({
+        title: "Sunken Bastion",
+        start: { col: 2, row: 6 },
+        gate: { col: 11, row: 0, nextRoom: 2 },
+        key: { col: 18, row: 10 },
+        altar: null,
+        relics: [{ col: 6, row: 10 }, { col: 10, row: 6 }, { col: 15, row: 2 }],
+        grasses: [{ col: 2, row: 2 }, { col: 2, row: 3 }, { col: 19, row: 8 }, { col: 19, row: 9 }],
+        enemies: [
+          { col: 6, row: 3, type: "slime" },
+          { col: 10, row: 9, type: "scout" },
+          { col: 15, row: 8, type: "scout" },
+          { col: 18, row: 4, type: "slime" }
+        ],
+        tiles
+      });
+    }
+
+    {
+      const tiles = makeTiles();
+      surroundWalls(tiles);
+      fillRect(tiles, 4, 3, 2, 2, "wall");
+      fillRect(tiles, 4, 8, 2, 2, "wall");
+      fillRect(tiles, 10, 3, 2, 2, "wall");
+      fillRect(tiles, 10, 8, 2, 2, "wall");
+      fillRect(tiles, 16, 3, 2, 2, "wall");
+      fillRect(tiles, 16, 8, 2, 2, "wall");
+      fillRect(tiles, 8, 5, 6, 3, "water");
+      rooms.push({
+        title: "Moon Vault",
+        start: { col: 2, row: 10 },
+        gate: null,
+        key: { col: 3, row: 2 },
+        altar: { col: 19, row: 2 },
+        relics: [{ col: 6, row: 6 }, { col: 14, row: 6 }, { col: 18, row: 9 }],
+        grasses: [{ col: 7, row: 10 }, { col: 8, row: 10 }, { col: 13, row: 10 }, { col: 14, row: 10 }],
+        enemies: [
+          { col: 6, row: 2, type: "brute" },
+          { col: 14, row: 2, type: "scout" },
+          { col: 6, row: 10, type: "scout" },
+          { col: 14, row: 10, type: "brute" },
+          { col: 19, row: 6, type: "slime" }
+        ],
+        tiles
+      });
+    }
+
+    return rooms;
+  }
+
+  function instantiateRoom(blueprint) {
+    return {
+      title: blueprint.title,
+      start: { ...blueprint.start },
+      gate: blueprint.gate ? { ...blueprint.gate, open: false } : null,
+      altar: blueprint.altar ? { ...blueprint.altar } : null,
+      key: blueprint.key ? { ...blueprint.key, collected: false } : null,
+      relics: blueprint.relics.map((relic) => ({ ...relic, taken: false })),
+      grasses: blueprint.grasses.map((grass) => ({ ...grass, cut: false })),
+      hearts: [],
+      enemies: blueprint.enemies.map((enemy) => {
+        const center = tileCenter(enemy.col, enemy.row);
+        const stats = ENEMY_STATS[enemy.type];
+        return {
+          ...enemy,
+          x: center.x,
+          y: center.y,
+          anchorX: center.x,
+          anchorY: center.y,
+          hp: stats.hp,
+          radius: stats.radius,
+          pulse: Math.random() * Math.PI * 2,
+          wobble: Math.random() * Math.PI * 2
+        };
+      }),
+      tiles: blueprint.tiles.map((row) => row.map((cell) => ({ ...cell })))
+    };
+  }
+
+  function rectCircleHit(rectX, rectY, rectW, rectH, cx, cy, radius) {
+    const nx = clamp(cx, rectX, rectX + rectW);
+    const ny = clamp(cy, rectY, rectY + rectH);
+    return distance(nx, ny, cx, cy) < radius;
+  }
+
+  function tileBlocked(room, col, row) {
+    if (row < 0 || row >= ROWS || col < 0 || col >= COLS) {
+      return true;
+    }
+    if (room.gate && room.gate.col === col && room.gate.row === row) {
+      return !room.gate.open;
+    }
+    return room.tiles[row][col].blocked;
+  }
+
+  const blueprints = buildQuestBlueprints();
+  const stateQuest = {
+    roomIndex: 0,
+    room: instantiateRoom(blueprints[0]),
+    player: { x: 0, y: 0, tx: 0, ty: 0, facingX: 1, facingY: 0, hitCooldown: 0, attackTimer: 0, attackCooldown: 0 },
+    score: 0,
+    hearts: 5,
+    maxHearts: 5,
+    shards: 0,
+    status: "",
+    victory: false
+  };
+
+  function placePlayerAtStart() {
+    const start = tileCenter(stateQuest.room.start.col, stateQuest.room.start.row);
+    stateQuest.player.x = start.x;
+    stateQuest.player.y = start.y;
+    stateQuest.player.tx = start.x;
+    stateQuest.player.ty = start.y;
+  }
+
+  function updateQuestObjective() {
+    if (stateQuest.victory) {
+      stateQuest.status = "Altar restored. Quest Realm is secure.";
+      return;
+    }
+    if (stateQuest.room.altar) {
+      if (!stateQuest.room.key.collected) {
+        stateQuest.status = "Find the final vault key.";
+      } else if (stateQuest.room.enemies.length > 0) {
+        stateQuest.status = "The altar is sealed. Defeat the last guardian.";
+      } else {
+        stateQuest.status = "The altar is awake. Step into the circle.";
+      }
+      return;
+    }
+    if (!stateQuest.room.key.collected) {
+      stateQuest.status = "Sweep the room and claim its key.";
+      return;
+    }
+    if (stateQuest.room.enemies.length > 0) {
+      stateQuest.status = "The gate remains sealed until the guardians fall.";
+      return;
+    }
+    if (stateQuest.room.gate && !stateQuest.room.gate.open) {
+      stateQuest.room.gate.open = true;
+    }
+    stateQuest.status = "The gate is open. Advance to the next realm.";
+  }
+
+  function loadRoom(index) {
+    stateQuest.roomIndex = index;
+    stateQuest.room = instantiateRoom(blueprints[index]);
+    placePlayerAtStart();
+    updateQuestObjective();
+  }
+
+  function resetCurrentRoom() {
+    const penalty = Math.min(60, stateQuest.score);
+    stateQuest.score -= penalty;
+    loadRoom(stateQuest.roomIndex);
+    stateQuest.hearts = stateQuest.maxHearts;
+    stateQuest.status = penalty > 0 ? `You fell back and lost ${penalty} points.` : "You fell back to camp.";
+  }
+
+  function collectHeartDrops() {
+    stateQuest.room.hearts = stateQuest.room.hearts.filter((heart) => {
+      if (distance(heart.x, heart.y, stateQuest.player.x, stateQuest.player.y) < 24) {
+        stateQuest.hearts = Math.min(stateQuest.maxHearts, stateQuest.hearts + 1);
+        stateQuest.status = "Heart recovered.";
+        return false;
+      }
+      return true;
+    });
+  }
+
+  function tryMoveQuest(nextX, nextY) {
+    const room = stateQuest.room;
+    const radius = PLAYER_RADIUS;
+    const minCol = Math.floor((nextX - radius) / TILE);
+    const maxCol = Math.floor((nextX + radius) / TILE);
+    const minRow = Math.floor((nextY - radius) / TILE);
+    const maxRow = Math.floor((nextY + radius) / TILE);
+    for (let row = minRow; row <= maxRow; row += 1) {
+      for (let col = minCol; col <= maxCol; col += 1) {
+        if (tileBlocked(room, col, row)) {
+          const tileX = col * TILE;
+          const tileY = row * TILE;
+          if (rectCircleHit(tileX, tileY, TILE, TILE, nextX, nextY, radius)) {
+            return false;
+          }
+        }
+      }
+    }
+    stateQuest.player.x = clamp(nextX, TILE * 0.7, TILE * (COLS - 0.7));
+    stateQuest.player.y = clamp(nextY, TILE * 0.7, TILE * (ROWS - 0.7));
+    return true;
+  }
+
+  function swingBlade() {
+    if (stateQuest.player.attackCooldown > 0 || stateQuest.victory) {
+      return;
+    }
+    stateQuest.player.attackTimer = 0.2;
+    stateQuest.player.attackCooldown = 0.28;
+    let cleared = 0;
+    const facingX = stateQuest.player.facingX || 1;
+    const facingY = stateQuest.player.facingY || 0;
+    const room = stateQuest.room;
+
+    room.enemies = room.enemies.filter((enemy) => {
+      const dx = enemy.x - stateQuest.player.x;
+      const dy = enemy.y - stateQuest.player.y;
+      const dist = Math.hypot(dx, dy);
+      const dot = ((dx / (dist || 1)) * facingX) + ((dy / (dist || 1)) * facingY);
+      if (dist < 72 && dot > -0.18) {
+        enemy.hp -= 1;
+        if (enemy.hp <= 0) {
+          cleared += 1;
+          stateQuest.score += ENEMY_STATS[enemy.type].score;
+          if ((stateQuest.score + enemy.x + enemy.y) % 3 === 0) {
+            room.hearts.push({ x: enemy.x, y: enemy.y });
+          }
+          return false;
+        }
+      }
+      return true;
+    });
+
+    room.grasses.forEach((grass) => {
+      if (grass.cut) {
+        return;
+      }
+      const center = tileCenter(grass.col, grass.row);
+      const dx = center.x - stateQuest.player.x;
+      const dy = center.y - stateQuest.player.y;
+      const dist = Math.hypot(dx, dy);
+      const dot = ((dx / (dist || 1)) * facingX) + ((dy / (dist || 1)) * facingY);
+      if (dist < 66 && dot > -0.2) {
+        grass.cut = true;
+        if ((grass.col + grass.row + stateQuest.score) % 4 === 0) {
+          room.hearts.push({ x: center.x, y: center.y });
+        }
+      }
+    });
+
+    if (cleared > 0) {
+      stateQuest.status = `Blade cleared ${cleared} foe${cleared > 1 ? "s" : ""}.`;
+      updateQuestObjective();
+    } else {
+      stateQuest.status = "Blade sweep ready.";
+    }
+  }
+
   return {
     reset() {
-      stateQuest.player = { x: 120, y: 260, tx: 120, ty: 260, hitCooldown: 0 };
+      stateQuest.roomIndex = 0;
+      stateQuest.room = instantiateRoom(blueprints[0]);
       stateQuest.score = 0;
+      stateQuest.hearts = stateQuest.maxHearts;
+      stateQuest.shards = 0;
+      stateQuest.victory = false;
+      stateQuest.player.hitCooldown = 0;
+      stateQuest.player.attackTimer = 0;
+      stateQuest.player.attackCooldown = 0;
+      stateQuest.player.facingX = 1;
+      stateQuest.player.facingY = 0;
+      placePlayerAtStart();
       stateQuest.status = currentUi().arcadeApps.quest.howText;
-      stateQuest.lastMove = { x: 1, y: 0 };
-      refillGems();
-      refillEnemies();
+      updateQuestObjective();
     },
     update(dt, input) {
+      const room = stateQuest.room;
+      const player = stateQuest.player;
+      player.hitCooldown = Math.max(0, player.hitCooldown - dt);
+      player.attackTimer = Math.max(0, player.attackTimer - dt);
+      player.attackCooldown = Math.max(0, player.attackCooldown - dt);
+
       let moveX = 0;
       let moveY = 0;
       if (input.keys.has("ArrowLeft") || input.keys.has("a")) moveX -= 1;
       if (input.keys.has("ArrowRight") || input.keys.has("d")) moveX += 1;
       if (input.keys.has("ArrowUp") || input.keys.has("w")) moveY -= 1;
       if (input.keys.has("ArrowDown") || input.keys.has("s")) moveY += 1;
-      const speed = 180;
+
+      const speed = 168;
       if (moveX || moveY) {
         const length = Math.hypot(moveX, moveY) || 1;
         moveX /= length;
         moveY /= length;
-        stateQuest.player.x += moveX * speed * dt;
-        stateQuest.player.y += moveY * speed * dt;
-        stateQuest.lastMove = { x: moveX, y: moveY };
+        player.tx = player.x + moveX * TILE;
+        player.ty = player.y + moveY * TILE;
+        player.facingX = moveX;
+        player.facingY = moveY;
       } else {
-        const dx = stateQuest.player.tx - stateQuest.player.x;
-        const dy = stateQuest.player.ty - stateQuest.player.y;
+        const dx = player.tx - player.x;
+        const dy = player.ty - player.y;
         const dist = Math.hypot(dx, dy);
-        if (dist > 4) {
-          stateQuest.player.x += (dx / dist) * speed * dt;
-          stateQuest.player.y += (dy / dist) * speed * dt;
-          stateQuest.lastMove = { x: dx / dist, y: dy / dist };
+        if (dist > 5) {
+          moveX = dx / dist;
+          moveY = dy / dist;
+          player.facingX = moveX;
+          player.facingY = moveY;
         }
       }
-      stateQuest.player.x = clamp(stateQuest.player.x, 28, 852);
-      stateQuest.player.y = clamp(stateQuest.player.y, 28, 492);
-      stateQuest.player.hitCooldown = Math.max(0, stateQuest.player.hitCooldown - dt);
-      stateQuest.enemies.forEach((enemy) => {
-        enemy.x += enemy.vx * dt;
-        enemy.y += enemy.vy * dt;
-        if (enemy.x < 30 || enemy.x > 850) enemy.vx *= -1;
-        if (enemy.y < 30 || enemy.y > 490) enemy.vy *= -1;
-      });
-      stateQuest.gems = stateQuest.gems.filter((gem) => {
-        if (distance(gem.x, gem.y, stateQuest.player.x, stateQuest.player.y) < 24) {
-          stateQuest.score += 20;
-          stateQuest.status = "Relic secured.";
+
+      if (moveX || moveY) {
+        tryMoveQuest(player.x + moveX * speed * dt, player.y);
+        tryMoveQuest(player.x, player.y + moveY * speed * dt);
+      }
+
+      room.relics = room.relics.filter((relic) => {
+        if (distance(tileCenter(relic.col, relic.row).x, tileCenter(relic.col, relic.row).y, player.x, player.y) < 22) {
+          stateQuest.score += 18;
+          stateQuest.shards += 1;
+          stateQuest.status = "Relic shard secured.";
           return false;
         }
         return true;
       });
-      if (stateQuest.gems.length === 0) {
-        stateQuest.score += 50;
-        stateQuest.status = "Map cleared. New relic set deployed.";
-        refillGems();
+
+      if (room.key && !room.key.collected) {
+        const keyCenter = tileCenter(room.key.col, room.key.row);
+        if (distance(keyCenter.x, keyCenter.y, player.x, player.y) < 22) {
+          room.key.collected = true;
+          stateQuest.score += 30;
+          stateQuest.status = "Quest key claimed.";
+          updateQuestObjective();
+        }
       }
-      stateQuest.enemies.forEach((enemy) => {
-        if (distance(enemy.x, enemy.y, stateQuest.player.x, stateQuest.player.y) < 28 && stateQuest.player.hitCooldown <= 0) {
-          stateQuest.player.hitCooldown = 1.2;
-          stateQuest.score = Math.max(0, stateQuest.score - 10);
-          stateQuest.player.x = 120;
-          stateQuest.player.y = 260;
-          stateQuest.status = "Sentry contact. Regain your line.";
+
+      room.enemies.forEach((enemy) => {
+        const stats = ENEMY_STATS[enemy.type];
+        const dx = player.x - enemy.x;
+        const dy = player.y - enemy.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        enemy.pulse += dt * 2.6;
+        enemy.wobble += dt * (enemy.type === "brute" ? 1.5 : 2.8);
+        let dirX = 0;
+        let dirY = 0;
+        if (dist < 230 || enemy.type === "brute") {
+          dirX = dx / dist;
+          dirY = dy / dist;
+        } else {
+          dirX = Math.cos(enemy.wobble) * 0.65;
+          dirY = Math.sin(enemy.wobble) * 0.65;
+        }
+        const stepX = enemy.x + dirX * stats.speed * dt;
+        const stepY = enemy.y + dirY * stats.speed * dt;
+        const enemyRadius = enemy.radius;
+        const col = Math.floor(stepX / TILE);
+        const row = Math.floor(stepY / TILE);
+        if (!tileBlocked(room, col, row) && !rectCircleHit(col * TILE, row * TILE, TILE, TILE, stepX, stepY, enemyRadius)) {
+          enemy.x = stepX;
+          enemy.y = stepY;
+        }
+        if (distance(enemy.x, enemy.y, player.x, player.y) < enemy.radius + PLAYER_RADIUS && player.hitCooldown <= 0) {
+          player.hitCooldown = 1.15;
+          stateQuest.hearts -= 1;
+          player.tx = player.x - (dx / dist) * 40;
+          player.ty = player.y - (dy / dist) * 40;
+          stateQuest.status = stateQuest.hearts > 0 ? `Hit taken. ${stateQuest.hearts} hearts left.` : "The quest has fallen back to camp.";
+          if (stateQuest.hearts <= 0) {
+            resetCurrentRoom();
+          }
         }
       });
+
+      collectHeartDrops();
+
+      if (room.gate && room.key.collected && room.enemies.length === 0) {
+        room.gate.open = true;
+      }
+
+      if (room.gate && room.gate.open) {
+        const gateCenter = tileCenter(room.gate.col, room.gate.row);
+        if (distance(gateCenter.x, gateCenter.y, player.x, player.y) < 26) {
+          stateQuest.score += 40;
+          loadRoom(room.gate.nextRoom);
+          stateQuest.status = `Entering ${stateQuest.room.title}.`;
+          return;
+        }
+      }
+
+      if (room.altar && room.key.collected && room.enemies.length === 0) {
+        const altarCenter = tileCenter(room.altar.col, room.altar.row);
+        if (distance(altarCenter.x, altarCenter.y, player.x, player.y) < 28) {
+          stateQuest.victory = true;
+          stateQuest.score += 150;
+          updateQuestObjective();
+        }
+      }
     },
     render(ctx, canvas) {
       clearArcadeCanvas(ctx, canvas);
-      drawLabel(ctx, "Quest Realm", 28, 38, 28);
-      ctx.fillStyle = "rgba(31,213,196,0.12)";
-      drawRoundedRect(ctx, 18, 56, 844, 438, 18, "rgba(255,255,255,0.03)");
-      stateQuest.gems.forEach((gem) => {
+      const room = stateQuest.room;
+      const palette = ROOM_COLORS[stateQuest.roomIndex];
+      const t = performance.now() / 1000;
+
+      for (let row = 0; row < ROWS; row += 1) {
+        for (let col = 0; col < COLS; col += 1) {
+          const tile = room.tiles[row][col];
+          const x = col * TILE;
+          const y = row * TILE;
+          ctx.fillStyle = (row + col) % 2 === 0 ? palette.floorA : palette.floorB;
+          ctx.fillRect(x, y, TILE, TILE);
+
+          if (tile.type === "wall") {
+            drawRoundedRect(ctx, x + 2, y + 2, TILE - 4, TILE - 4, 8, palette.wall);
+            ctx.strokeStyle = "rgba(255,255,255,0.08)";
+            ctx.strokeRect(x + 8, y + 8, TILE - 16, TILE - 16);
+          } else if (tile.type === "tree") {
+            drawRoundedRect(ctx, x + 10, y + 20, 20, 14, 6, "#4e2d17");
+            ctx.fillStyle = palette.tree;
+            ctx.beginPath();
+            ctx.arc(x + 20, y + 18, 14, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (tile.type === "shrub") {
+            drawRoundedRect(ctx, x + 6, y + 8, TILE - 12, TILE - 16, 10, palette.shrub);
+          } else if (tile.type === "water") {
+            drawRoundedRect(ctx, x + 2, y + 2, TILE - 4, TILE - 4, 8, palette.water);
+            ctx.strokeStyle = "rgba(255,255,255,0.18)";
+            ctx.beginPath();
+            ctx.moveTo(x + 6, y + 12 + Math.sin(t + row + col) * 2);
+            ctx.lineTo(x + TILE - 6, y + 12 + Math.sin(t + row + col) * 2);
+            ctx.moveTo(x + 6, y + 24 + Math.cos(t * 1.4 + row) * 2);
+            ctx.lineTo(x + TILE - 6, y + 24 + Math.cos(t * 1.4 + row) * 2);
+            ctx.stroke();
+          }
+        }
+      }
+
+      room.grasses.forEach((grass) => {
+        if (grass.cut) {
+          return;
+        }
+        const center = tileCenter(grass.col, grass.row);
+        ctx.fillStyle = "rgba(170, 232, 133, 0.75)";
+        ctx.beginPath();
+        ctx.moveTo(center.x - 10, center.y + 10);
+        ctx.lineTo(center.x - 4, center.y - 8);
+        ctx.lineTo(center.x + 2, center.y + 8);
+        ctx.lineTo(center.x + 8, center.y - 10);
+        ctx.lineTo(center.x + 12, center.y + 10);
+        ctx.closePath();
+        ctx.fill();
+      });
+
+      room.relics.forEach((relic) => {
+        const center = tileCenter(relic.col, relic.row);
+        ctx.fillStyle = palette.accent;
+        ctx.beginPath();
+        ctx.moveTo(center.x, center.y - 12);
+        ctx.lineTo(center.x + 10, center.y);
+        ctx.lineTo(center.x, center.y + 12);
+        ctx.lineTo(center.x - 10, center.y);
+        ctx.closePath();
+        ctx.fill();
+      });
+
+      if (room.key && !room.key.collected) {
+        const center = tileCenter(room.key.col, room.key.row);
         ctx.fillStyle = "#ffd166";
         ctx.beginPath();
-        ctx.arc(gem.x, gem.y, 10, 0, Math.PI * 2);
+        ctx.arc(center.x - 6, center.y, 6, 0, Math.PI * 2);
         ctx.fill();
-      });
-      stateQuest.enemies.forEach((enemy) => {
-        ctx.fillStyle = "#ff6f7f";
+        ctx.fillRect(center.x, center.y - 2, 16, 4);
+        ctx.fillRect(center.x + 10, center.y - 6, 4, 4);
+        ctx.fillRect(center.x + 6, center.y + 2, 4, 4);
+      }
+
+      room.hearts.forEach((heart) => {
+        ctx.fillStyle = "#ff7d95";
         ctx.beginPath();
-        ctx.arc(enemy.x, enemy.y, 12, 0, Math.PI * 2);
+        ctx.arc(heart.x - 4, heart.y - 2, 5, 0, Math.PI * 2);
+        ctx.arc(heart.x + 4, heart.y - 2, 5, 0, Math.PI * 2);
+        ctx.lineTo(heart.x, heart.y + 10);
+        ctx.closePath();
         ctx.fill();
       });
-      ctx.fillStyle = stateQuest.player.hitCooldown > 0 ? "#ffb347" : "#1fd5c4";
+
+      if (room.gate) {
+        const gateCenter = tileCenter(room.gate.col, room.gate.row);
+        drawRoundedRect(ctx, gateCenter.x - 16, gateCenter.y - 20, 32, 40, 10, room.gate.open ? "rgba(110, 224, 196, 0.75)" : "rgba(255, 140, 26, 0.78)");
+      }
+
+      if (room.altar) {
+        const altarCenter = tileCenter(room.altar.col, room.altar.row);
+        drawRoundedRect(ctx, altarCenter.x - 18, altarCenter.y - 18, 36, 36, 12, room.key.collected && room.enemies.length === 0 ? "rgba(255, 213, 102, 0.88)" : "rgba(160, 180, 210, 0.5)");
+        ctx.strokeStyle = "rgba(255,255,255,0.28)";
+        ctx.beginPath();
+        ctx.arc(altarCenter.x, altarCenter.y, 18, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      room.enemies.forEach((enemy) => {
+        const stats = ENEMY_STATS[enemy.type];
+        const bob = Math.sin(enemy.pulse) * 2;
+        ctx.fillStyle = stats.color;
+        if (enemy.type === "brute") {
+          drawRoundedRect(ctx, enemy.x - 15, enemy.y - 15 + bob, 30, 30, 9, stats.color);
+        } else {
+          ctx.beginPath();
+          ctx.arc(enemy.x, enemy.y + bob, enemy.radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.fillStyle = "#0f1725";
+        ctx.beginPath();
+        ctx.arc(enemy.x - 4, enemy.y - 2 + bob, 2, 0, Math.PI * 2);
+        ctx.arc(enemy.x + 4, enemy.y - 2 + bob, 2, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      const player = stateQuest.player;
+      ctx.fillStyle = player.hitCooldown > 0 ? "#ffb347" : "#8dd7ff";
       ctx.beginPath();
-      ctx.arc(stateQuest.player.x, stateQuest.player.y, 14, 0, Math.PI * 2);
+      ctx.arc(player.x, player.y, PLAYER_RADIUS, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = "rgba(122,199,255,0.5)";
-      ctx.beginPath();
-      ctx.moveTo(stateQuest.player.x, stateQuest.player.y);
-      ctx.lineTo(stateQuest.player.tx, stateQuest.player.ty);
-      ctx.stroke();
+      ctx.fillStyle = "#173047";
+      ctx.fillRect(player.x - 6, player.y + 10, 12, 10);
+
+      if (player.attackTimer > 0) {
+        const reachX = player.x + player.facingX * 36;
+        const reachY = player.y + player.facingY * 36;
+        ctx.strokeStyle = "rgba(255, 232, 149, 0.92)";
+        ctx.lineWidth = 7;
+        ctx.beginPath();
+        ctx.moveTo(player.x + player.facingX * 14, player.y + player.facingY * 14);
+        ctx.lineTo(reachX, reachY);
+        ctx.stroke();
+      }
+
+      drawRoundedRect(ctx, 18, 18, 328, 66, 18, "rgba(5, 14, 25, 0.72)");
+      drawLabel(ctx, room.title, 34, 44, 24);
+      drawLabel(ctx, `Score ${stateQuest.score}   Shards ${stateQuest.shards}   Hearts ${stateQuest.hearts}/${stateQuest.maxHearts}`, 34, 69, 16, "#c6d8ec");
+
+      drawRoundedRect(ctx, 546, 18, 316, 66, 18, "rgba(5, 14, 25, 0.72)");
+      const objective = room.altar
+        ? (room.key.collected && room.enemies.length === 0 ? "Reach the altar" : "Secure the vault")
+        : (room.gate && room.gate.open ? "Move through the gate" : "Find the key and clear the room");
+      drawLabel(ctx, `Objective: ${objective}`, 562, 44, 18);
+      drawLabel(ctx, stateQuest.victory ? "Quest complete" : `${room.enemies.length} guardians remain`, 562, 69, 16, "#c6d8ec");
     },
     pointerDown(point) {
       stateQuest.player.tx = point.x;
@@ -1808,19 +2321,24 @@ function createQuestGame() {
       stateQuest.player.ty = point.y;
     },
     keyDown(key) {
-      if (key === " ") {
-        this.action();
+      if (key === " " || key === "Enter") {
+        swingBlade();
       }
     },
     action() {
-      stateQuest.player.x = clamp(stateQuest.player.x + stateQuest.lastMove.x * 70, 28, 852);
-      stateQuest.player.y = clamp(stateQuest.player.y + stateQuest.lastMove.y * 70, 28, 492);
-      stateQuest.status = "Dash used.";
+      swingBlade();
     },
     controls() {
       return [
-        { label: currentUi().arcadeApps.quest.buttons[0], onClick: () => { stateQuest.player.tx = 120; stateQuest.player.ty = 260; } },
-        { label: currentUi().arcadeApps.quest.buttons[1], onClick: () => this.action() }
+        {
+          label: currentUi().arcadeApps.quest.buttons[0],
+          onClick: () => {
+            const start = tileCenter(stateQuest.room.start.col, stateQuest.room.start.row);
+            stateQuest.player.tx = start.x;
+            stateQuest.player.ty = start.y;
+          }
+        },
+        { label: currentUi().arcadeApps.quest.buttons[1], onClick: () => swingBlade(), wide: true }
       ];
     },
     getScore() {
@@ -1830,7 +2348,13 @@ function createQuestGame() {
       return stateQuest.status;
     },
     debug() {
-      return { score: stateQuest.score, gems: stateQuest.gems.length };
+      return {
+        score: stateQuest.score,
+        room: stateQuest.roomIndex,
+        enemies: stateQuest.room.enemies.length,
+        shards: stateQuest.shards,
+        victory: stateQuest.victory
+      };
     }
   };
 }

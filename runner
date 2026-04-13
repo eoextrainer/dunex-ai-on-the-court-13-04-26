@@ -1,0 +1,157 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
+RUNTIME_DIR="$REPO_ROOT/.runner"
+BACKEND_PORT="${BACKEND_PORT:-5501}"
+FRONTEND_PORT="${FRONTEND_PORT:-5500}"
+BACKEND_PID_FILE="$RUNTIME_DIR/backend.pid"
+FRONTEND_PID_FILE="$RUNTIME_DIR/frontend.pid"
+BACKEND_LOG="$RUNTIME_DIR/backend.log"
+FRONTEND_LOG="$RUNTIME_DIR/frontend.log"
+APP_URL="http://127.0.0.1:${FRONTEND_PORT}/"
+SMOKE_URL="http://127.0.0.1:${FRONTEND_PORT}/smoke-test.html"
+
+mkdir -p "$RUNTIME_DIR"
+
+color_echo() {
+  local color="$1"
+  shift
+  printf '%b%s%b\n' "$color" "$*" '\033[0m'
+}
+
+green='\033[32m'
+yellow='\033[33m'
+red='\033[31m'
+cyan='\033[36m'
+
+require_command() {
+  local name="$1"
+  if ! command -v "$name" >/dev/null 2>&1; then
+    color_echo "$red" "Missing required command: $name"
+    exit 1
+  fi
+}
+
+cleanup_port() {
+  local port="$1"
+  local pids
+  pids="$(lsof -ti tcp:"$port" 2>/dev/null || true)"
+  if [[ -z "$pids" ]]; then
+    return
+  fi
+
+  color_echo "$yellow" "Clearing port $port"
+  while IFS= read -r pid; do
+    [[ -z "$pid" ]] && continue
+    kill -TERM "$pid" >/dev/null 2>&1 || true
+  done <<< "$pids"
+
+  pids="$(lsof -ti tcp:"$port" 2>/dev/null || true)"
+  if [[ -n "$pids" ]]; then
+    while IFS= read -r pid; do
+      [[ -z "$pid" ]] && continue
+      kill -KILL "$pid" >/dev/null 2>&1 || true
+    done <<< "$pids"
+  fi
+}
+
+stop_pid_file() {
+  local pid_file="$1"
+  if [[ ! -f "$pid_file" ]]; then
+    return
+  fi
+  local pid
+  pid="$(cat "$pid_file")"
+  if [[ -n "$pid" ]] && kill -0 "$pid" >/dev/null 2>&1; then
+    kill -TERM "$pid" >/dev/null 2>&1 || true
+  fi
+  rm -f "$pid_file"
+}
+
+wait_for_url() {
+  local url="$1"
+  local label="$2"
+  local attempt
+  for attempt in $(seq 1 40); do
+    if curl -fsS "$url" >/dev/null 2>&1; then
+      color_echo "$green" "$label is ready at $url"
+      return
+    fi
+    python3 - <<'PY'
+import time
+time.sleep(0.15)
+PY
+  done
+  color_echo "$red" "$label failed to start at $url"
+  exit 1
+}
+
+start_backend() {
+  color_echo "$cyan" "Starting backend on port $BACKEND_PORT"
+  nohup python3 "$REPO_ROOT/scripts/local_app_backend.py" --port "$BACKEND_PORT" >"$BACKEND_LOG" 2>&1 &
+  echo "$!" > "$BACKEND_PID_FILE"
+  wait_for_url "http://127.0.0.1:${BACKEND_PORT}/health" "Backend"
+}
+
+start_frontend() {
+  color_echo "$cyan" "Starting frontend on port $FRONTEND_PORT"
+  nohup python3 "$REPO_ROOT/scripts/local_static_server.py" --port "$FRONTEND_PORT" --root "$REPO_ROOT/demo-app" >"$FRONTEND_LOG" 2>&1 &
+  echo "$!" > "$FRONTEND_PID_FILE"
+  wait_for_url "$APP_URL" "Frontend"
+}
+
+show_status() {
+  color_echo "$cyan" "Frontend URL: $APP_URL"
+  color_echo "$cyan" "Smoke Test:   $SMOKE_URL"
+  color_echo "$cyan" "Backend URL:  http://127.0.0.1:${BACKEND_PORT}/health"
+  if [[ -f "$FRONTEND_PID_FILE" ]]; then
+    color_echo "$green" "Frontend PID: $(cat "$FRONTEND_PID_FILE")"
+  fi
+  if [[ -f "$BACKEND_PID_FILE" ]]; then
+    color_echo "$green" "Backend PID:  $(cat "$BACKEND_PID_FILE")"
+  fi
+}
+
+start_all() {
+  require_command python3
+  require_command lsof
+  require_command curl
+  cleanup_port "$FRONTEND_PORT"
+  cleanup_port "$BACKEND_PORT"
+  stop_pid_file "$FRONTEND_PID_FILE"
+  stop_pid_file "$BACKEND_PID_FILE"
+  start_backend
+  start_frontend
+  show_status
+  open "$SMOKE_URL" >/dev/null 2>&1 || true
+}
+
+stop_all() {
+  stop_pid_file "$FRONTEND_PID_FILE"
+  stop_pid_file "$BACKEND_PID_FILE"
+  cleanup_port "$FRONTEND_PORT"
+  cleanup_port "$BACKEND_PORT"
+  color_echo "$green" "Runner services stopped."
+}
+
+case "${1:-start}" in
+  start)
+    start_all
+    ;;
+  stop)
+    stop_all
+    ;;
+  restart)
+    stop_all
+    start_all
+    ;;
+  status)
+    show_status
+    ;;
+  *)
+    color_echo "$red" "Usage: ./runner [start|stop|restart|status]"
+    exit 1
+    ;;
+esac

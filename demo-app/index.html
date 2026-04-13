@@ -50,7 +50,7 @@
     <main>
       <section class="screen active" id="homeScreen">
         <div class="home-hero">
-          <div>
+          <div class="home-copy">
             <p class="eyebrow" id="homeEyebrow"></p>
             <h1 id="homeTitle"></h1>
             <p class="hero-text" id="homeText"></p>
@@ -61,11 +61,14 @@
             <div class="feature-actions">
               <a class="hero-link" href="./smoke-test.html" id="homeSmokeLink"></a>
             </div>
+            <div class="score-panel">
+              <div class="score-card"><span class="score-label" id="homeLiveAppsLabel"></span><strong id="homeLiveAppsValue"></strong></div>
+              <div class="score-card"><span class="score-label" id="homeGenresLabel"></span><strong id="homeGenresValue"></strong></div>
+              <div class="score-card"><span class="score-label" id="homeControlsLabel"></span><strong id="homeControlsValue"></strong></div>
+            </div>
           </div>
-          <div class="score-panel">
-            <div class="score-card"><span class="score-label" id="homeLiveAppsLabel"></span><strong id="homeLiveAppsValue"></strong></div>
-            <div class="score-card"><span class="score-label" id="homeGenresLabel"></span><strong id="homeGenresValue"></strong></div>
-            <div class="score-card"><span class="score-label" id="homeControlsLabel"></span><strong id="homeControlsValue"></strong></div>
+          <div class="home-video-stage">
+            <video class="home-hero-video" src="./AI-vid-1.mp4" autoplay muted loop playsinline></video>
           </div>
         </div>
         <div class="feature-ribbon">

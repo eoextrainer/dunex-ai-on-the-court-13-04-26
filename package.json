@@ -41,6 +41,9 @@
 		"watch": "tsc -b -w",
 		"lint": "eslint",
 		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
+		"runner": "bash ./runner start",
+		"runner:stop": "bash ./runner stop",
+		"serve:demo": "python3 scripts/local_static_server.py --port 5500 --root demo-app",
 		"ops:menu": "bash scripts/project_console.sh",
 		"test:scripts": "bash scripts/tests/project_console_test.sh",
 		"deploy:pages": "bash scripts/deploy_pages_branch.sh"

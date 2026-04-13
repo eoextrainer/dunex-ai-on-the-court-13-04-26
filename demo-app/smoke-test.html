@@ -265,6 +265,8 @@
       assert(api, "Missing in-frame smoke test API.");
       const home = frameDoc().getElementById("homeScreen");
       assert(home.classList.contains("active"), "Home screen is not active after splash bypass.");
+      const heroVideo = frameDoc().querySelector(".home-hero-video");
+      assert(heroVideo, "Missing looping hero video on the home screen.");
       const cards = frameDoc().querySelectorAll("#appGrid .app-card");
       assert(cards.length === 8, `Expected 8 live app cards, found ${cards.length}.`);
       return `Home gallery rendered ${cards.length} launch cards.`;
@@ -375,6 +377,10 @@
         assert(after.screen === "arcade", `Game ${gameId} did not keep the arcade screen active.`);
         assert(after.activeArcade === gameId, `Game ${gameId} did not stay selected.`);
         assert(after.arcade && after.arcade.score >= before.arcade.score, `Game ${gameId} score moved backwards.`);
+        if (gameId === "quest") {
+          assert(typeof after.arcade.room === "number", "Quest Realm did not expose room progression state.");
+          assert(typeof after.arcade.shards === "number", "Quest Realm did not expose relic shard state.");
+        }
         const title = frameDoc().getElementById("arcadeTitle").textContent.trim();
         assert(title.length > 0, `Game ${gameId} rendered an empty arcade title.`);
         snapshots.push(`${gameId}:${after.arcade.score}`);
