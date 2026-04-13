@@ -2,64 +2,71 @@ const params = new URLSearchParams(window.location.search);
 const smokeMode = params.get("smoke") === "1";
 const skipSplash = params.get("skipSplash") === "1";
 
-const APP_IDS = ["course", "puzzle", "quest", "metro", "hopper", "serpent", "blade", "trail", "clash"];
-const ARCADE_IDS = ["quest", "metro", "hopper", "serpent", "blade", "trail", "clash"];
-const EXTERNAL_SOURCE_TILES = [
+const APP_IDS = ["course", "puzzle", "quest", "metro", "hopper", "serpent", "arcade16", "twod", "ateri", "snakegame", "arkanoid", "rebounce", "vikings", "blade", "trail", "clash"];
+const ARCADE_IDS = ["quest", "metro", "hopper", "serpent", "arcade16", "twod", "ateri", "snakegame", "arkanoid", "rebounce", "vikings", "blade", "trail", "clash"];
+const REPO_REMIX_TILES = [
   {
-    id: "source-arcade16",
+    id: "arcade16",
     title: "Arcade 16",
-    subtitle: "MIT-licensed C++ collection of sixteen classical arcade games.",
-    genre: "External Source",
-    description: "Repository by borbrudar with a bundled multi-game arcade launcher and published releases.",
-    url: "https://github.com/borbrudar/Arcade_16"
+    subtitle: "Native browser remix built around a sixteen-shard survival sprint.",
+    genre: "Remix Collection",
+    description: "Collect all sixteen relic shards, pulse back drones, and survive long enough to trigger the next wave.",
+    button: "Open",
+    badge: "Remix"
   },
   {
-    id: "source-2d-arcade-games",
+    id: "twod",
     title: "2D Arcade Games",
-    subtitle: "JavaScript canvas pack featuring Snake and Pacman.",
-    genre: "External Source",
-    description: "Repository by FoxyRommel with browser-based arcade experiments and sound-backed retro presentation.",
-    url: "https://github.com/FoxyRommel/2D-Arcade-Games"
+    subtitle: "Native browser maze-chase remix with pellets, patrols, and burst windows.",
+    genre: "Maze Chase",
+    description: "Sweep the maze, dodge the hunter, and trigger short stun bursts to clear the board.",
+    button: "Open",
+    badge: "Remix"
   },
   {
-    id: "source-ateri72",
+    id: "ateri",
     title: "ATERI-72",
-    subtitle: "Unity project collecting five classical arcade game clones.",
-    genre: "External Source",
-    description: "Repository by abdullahdedeoglu focused on a multi-game Unity arcade bundle.",
-    url: "https://github.com/abdullahdedeoglu/ATERI-72"
+    subtitle: "Native browser shooter remix with cycling wave patterns and lane pressure.",
+    genre: "Retro Shooter",
+    description: "Slide across the hangar, fire through rotating formations, and keep the orbital lane intact.",
+    button: "Open",
+    badge: "Remix"
   },
   {
-    id: "source-snakegame",
+    id: "snakegame",
     title: "SnakeGame",
-    subtitle: "MIT-licensed GUI rendition of the classic Snake arcade game.",
-    genre: "External Source",
-    description: "Repository by theadorabledev with Python-based Snake gameplay that inspired the new native browser riff in this gallery.",
-    url: "https://github.com/theadorabledev/SnakeGame"
+    subtitle: "Native browser snake run with fruit chains and speed boost control.",
+    genre: "Arcade Classic",
+    description: "Guide the glowing snake, stack fruit pickups, and boost without collapsing into your own trail.",
+    button: "Open",
+    badge: "Remix"
   },
   {
-    id: "source-gemika-arkanoid",
+    id: "arkanoid",
     title: "Gemika Arkanoid",
-    subtitle: "MIT-licensed retro Arkanoid project with levels and leaderboard support.",
-    genre: "External Source",
-    description: "Repository by leonism centered on brick-breaking action with a standalone homepage and Python source.",
-    url: "https://github.com/leonism/Gemika-Arkanoid-Retro-Classical-Game"
+    subtitle: "Native browser brick-breaker remix with relaunches and pace scaling.",
+    genre: "Brick Breaker",
+    description: "Hold the paddle, crack layered brick walls, and relaunch the ball before the court resets.",
+    button: "Open",
+    badge: "Remix"
   },
   {
-    id: "source-rebounce",
+    id: "rebounce",
     title: "Rebounce Game",
-    subtitle: "C++ paddle-and-ball arcade game with solo and dual-player modes.",
-    genre: "External Source",
-    description: "Repository by parth-v inspired by classical rebounding arcade gameplay and increasing difficulty.",
-    url: "https://github.com/parth-v/Rebounce_Game"
+    subtitle: "Native browser rebound defense with target walls and fast re-serves.",
+    genre: "Rebound Arena",
+    description: "Guard the left wall, keep the ball alive, and carve through the target bank on the far side.",
+    button: "Open",
+    badge: "Remix"
   },
   {
-    id: "source-vikings-yamb",
+    id: "vikings",
     title: "Vikings YaMBdventure",
-    subtitle: "Java Android project mixing Yamb dice play with arcade-style coin collection.",
-    genre: "External Source",
-    description: "Repository by NevenaMladenovic with a Viking-themed hybrid game and multiplayer features.",
-    url: "https://github.com/NevenaMladenovic/VikingsYaMBdventure"
+    subtitle: "Native browser dice-raid remix with longship lanes and combo scoring.",
+    genre: "Dice Adventure",
+    description: "Shift the longship route, raid with fresh dice rolls, and bank combo points before the voyage ends.",
+    button: "Open",
+    badge: "Remix"
   }
 ];
 const COURSE_SECTIONS = ["learn", "builder", "lab", "truth", "quiz"];
@@ -676,8 +683,8 @@ const uiText = {
     presentationOff: "Exit Presentation",
     home: {
       eyebrow: "Featured collection",
-      title: "One polished home for lessons, originals, and curated arcade sources.",
-      text: "The gallery keeps the current AI workshop front and center, adds seven original arcade experiences, and now includes a source shelf for external game repos.",
+      title: "One polished home for lessons, originals, and playable arcade remixes.",
+      text: "The gallery keeps the current AI workshop front and center, adds seven original arcade experiences, and now expands the lineup with seven browser-native remix apps.",
       featuredLaunch: "Open AI on the Court",
       featuredPuzzle: "Play Court Grid Sprint",
       smokeLink: "Open Browser Smoke Test",
@@ -686,8 +693,8 @@ const uiText = {
       controls: "Controls",
       controlsValue: "Mouse + Keys",
       galleryTitle: "Featured Apps",
-      galleryIntro: "A clean launcher inspired by premium app storefronts, rebuilt with an original visual language and expanded with curated external source shelves.",
-      chips: ["French First", "4 Languages", "Offline Ready", "Source Shelf"],
+      galleryIntro: "A clean launcher inspired by premium app storefronts, rebuilt with an original visual language and expanded with playable remix apps inside the same shell.",
+      chips: ["French First", "4 Languages", "Offline Ready", "Playable Remixes"],
       externalBadge: "Source",
       externalButton: "Open Repo",
       apps: [
@@ -812,8 +819,8 @@ const uiText = {
     presentationOff: "Quitter Presentation",
     home: {
       eyebrow: "Collection a la une",
-      title: "Une base elegante pour les cours, les originaux et une selection de sources arcade.",
-      text: "La galerie place l'atelier IA au premier plan, conserve le puzzle existant, ajoute sept experiences originales, puis expose une etagere de repos sources externes.",
+      title: "Une base elegante pour les cours, les originaux et des remixes arcade jouables.",
+      text: "La galerie place l'atelier IA au premier plan, conserve le puzzle existant, ajoute sept experiences originales, puis etend la selection avec sept remixes navigateur jouables.",
       featuredLaunch: "Ouvrir AI on the Court",
       featuredPuzzle: "Jouer a Court Grid Sprint",
       smokeLink: "Ouvrir le Smoke Test Navigateur",
@@ -822,8 +829,8 @@ const uiText = {
       controls: "Controles",
       controlsValue: "Souris + clavier",
       galleryTitle: "Apps a la une",
-      galleryIntro: "Un lanceur propre inspire des vitrines premium, reconstruit avec un langage visuel original et complete par une etagere de sources externes.",
-      chips: ["Francais par defaut", "4 langues", "Pret hors ligne", "Source shelf"],
+      galleryIntro: "Un lanceur propre inspire des vitrines premium, reconstruit avec un langage visuel original et complete par des remixes jouables dans le meme shell.",
+      chips: ["Francais par defaut", "4 langues", "Pret hors ligne", "Remixes jouables"],
       externalBadge: "Source",
       externalButton: "Ouvrir le repo",
       apps: [
@@ -948,8 +955,8 @@ const uiText = {
     presentationOff: "Salir presentacion",
     home: {
       eyebrow: "Coleccion destacada",
-      title: "Una sola base para clases, originales y fuentes arcade curadas.",
-      text: "La galeria mantiene el taller de IA en primer plano, conserva el puzzle actual, suma siete experiencias originales y agrega una estanteria de repos externos.",
+      title: "Una sola base para clases, originales y remixes arcade jugables.",
+      text: "La galeria mantiene el taller de IA en primer plano, conserva el puzzle actual, suma siete experiencias originales y amplia la seleccion con siete remixes nativos jugables.",
       featuredLaunch: "Abrir AI on the Court",
       featuredPuzzle: "Jugar Court Grid Sprint",
       smokeLink: "Abrir prueba de humo",
@@ -958,8 +965,8 @@ const uiText = {
       controls: "Controles",
       controlsValue: "Raton + teclado",
       galleryTitle: "Apps destacadas",
-      galleryIntro: "Un lanzador limpio inspirado en escaparates premium, reconstruido con un lenguaje visual original y ampliado con una estanteria de fuentes externas.",
-      chips: ["Frances por defecto", "4 idiomas", "Listo offline", "Source shelf"],
+      galleryIntro: "Un lanzador limpio inspirado en escaparates premium, reconstruido con un lenguaje visual original y ampliado con remixes jugables dentro del mismo shell.",
+      chips: ["Frances por defecto", "4 idiomas", "Listo offline", "Remixes jugables"],
       externalBadge: "Fuente",
       externalButton: "Abrir repo",
       apps: [
@@ -1084,8 +1091,8 @@ const uiText = {
     presentationOff: "Esci presentazione",
     home: {
       eyebrow: "Collezione in evidenza",
-      title: "Una sola base per lezioni, originali e fonti arcade curate.",
-      text: "La galleria tiene il workshop IA al centro, conserva il puzzle attuale, aggiunge sette esperienze originali e apre uno scaffale di repository esterni.",
+      title: "Una sola base per lezioni, originali e remix arcade giocabili.",
+      text: "La galleria tiene il workshop IA al centro, conserva il puzzle attuale, aggiunge sette esperienze originali e amplia la selezione con sette remix nativi giocabili.",
       featuredLaunch: "Apri AI on the Court",
       featuredPuzzle: "Gioca a Court Grid Sprint",
       smokeLink: "Apri Smoke Test",
@@ -1094,8 +1101,8 @@ const uiText = {
       controls: "Controlli",
       controlsValue: "Mouse + tastiera",
       galleryTitle: "App in evidenza",
-      galleryIntro: "Un launcher pulito ispirato alle vetrine premium, ricostruito con un linguaggio visivo originale e ampliato con uno scaffale di sorgenti esterne.",
-      chips: ["Francese predefinito", "4 lingue", "Pronto offline", "Source shelf"],
+      galleryIntro: "Un launcher pulito ispirato alle vetrine premium, ricostruito con un linguaggio visivo originale e ampliato con remix giocabili nello stesso shell.",
+      chips: ["Francese predefinito", "4 lingue", "Pronto offline", "Remix giocabili"],
       externalBadge: "Fonte",
       externalButton: "Apri repo",
       apps: [
@@ -1267,6 +1274,10 @@ function currentUi() {
   return uiText[state.currentLang];
 }
 
+function currentArcadeText(appId) {
+  return currentUi().arcadeApps[appId] || uiText.en.arcadeApps[appId];
+}
+
 function setScreen(screenId) {
   state.currentScreen = screenId;
   Object.entries(elements.screens).forEach(([key, section]) => {
@@ -1312,7 +1323,7 @@ function startSplash() {
 
 function renderGallery() {
   const home = currentUi().home;
-  const galleryApps = [...home.apps, ...EXTERNAL_SOURCE_TILES];
+  const galleryApps = [...home.apps, ...REPO_REMIX_TILES];
   elements.galleryChips.innerHTML = "";
   home.chips.forEach((chip) => {
     const span = document.createElement("span");
@@ -1325,11 +1336,9 @@ function renderGallery() {
   galleryApps.forEach((app) => {
     const article = document.createElement("article");
     article.className = "app-card";
-    const actionMarkup = app.url
-      ? `<a class="gallery-btn" data-source-repo="1" href="${app.url}" target="_blank" rel="noreferrer">${home.externalButton}</a>`
-      : `<button class="gallery-btn primary" data-app="${app.id}">${app.button}</button>`;
-    const statusLabel = app.url ? home.externalBadge : "Live";
-    const statusClass = app.url ? "source" : "live";
+    const actionMarkup = `<button class="gallery-btn primary" data-app="${app.id}">${app.button}</button>`;
+    const statusLabel = app.badge || "Live";
+    const statusClass = app.badge ? "source" : "live";
     article.innerHTML = `
       <div class="tile-badges">
         <span class="status-pill ${statusClass}">${statusLabel}</span>
@@ -1450,6 +1459,76 @@ function analyzeCoursePrompt() {
     strengths.push(course.strengths.format);
   } else {
     fixes.push(course.fixes.format);
+      arcade16: {
+        eyebrow: "Remix collection",
+        title: "Arcade 16",
+        intro: "Original browser survival built around sixteen shards per wave. Sweep the room, pulse nearby drones, and secure the full set.",
+        action: "Pulse",
+        reset: "Restart Wave",
+        controlsText: "Keyboard: arrows or WASD move. Mouse: click to guide the collector. Pulse clears nearby drones when they crowd the lane.",
+        howText: "Collect all sixteen shards in a wave. Drones chip away at your hull, so keep moving and pulse only when the room tightens.",
+        buttons: ["Center", "Pulse"]
+      },
+      twod: {
+        eyebrow: "Maze chase",
+        title: "2D Arcade Games",
+        intro: "Original browser maze chase with pellets, corners, and one relentless patrol hunter.",
+        action: "Burst",
+        reset: "Restart Maze",
+        controlsText: "Keyboard: arrows or WASD queue turns on the grid. Mouse: click around the runner to snap to a direction. Burst briefly stuns the hunter.",
+        howText: "Clear the pellets, avoid direct contact, and use burst windows to turn pressure into openings.",
+        buttons: ["Up", "Left", "Right", "Down", "Burst"]
+      },
+      ateri: {
+        eyebrow: "Retro shooter",
+        title: "ATERI-72",
+        intro: "Original browser shooter riff with rotating enemy formations and fast lane defense.",
+        action: "Fire",
+        reset: "Restart Orbit",
+        controlsText: "Keyboard: arrows or A and D slide the ship. Mouse: click to reposition the ship. Fire launches a straight shot through the current pattern.",
+        howText: "Break formations before they reach the hangar floor. Every cleared wave shifts into a new pattern set.",
+        buttons: ["Slide Left", "Slide Right", "Fire"]
+      },
+      snakegame: {
+        eyebrow: "Arcade classic",
+        title: "SnakeGame",
+        intro: "Original browser riff inspired by the MIT-licensed SnakeGame repo: collect fruit, grow longer, and survive tighter turns.",
+        action: "Boost",
+        reset: "Restart Snake",
+        controlsText: "Keyboard: arrows or WASD steer the snake. Mouse: click around the head to turn into that lane. Boost briefly speeds up the crawl.",
+        howText: "Collect fruit to grow and score. Walls and your own trail end the run, so plan each turn before you boost.",
+        buttons: ["Up", "Left", "Right", "Down", "Boost"]
+      },
+      arkanoid: {
+        eyebrow: "Brick breaker",
+        title: "Gemika Arkanoid",
+        intro: "Original browser brick breaker with layered rows, relaunch control, and rising ball speed.",
+        action: "Launch",
+        reset: "Restart Breaker",
+        controlsText: "Keyboard: arrows or A and D move the paddle. Mouse: move or click near the paddle to reposition. Launch starts the current ball and nudges it faster mid-round.",
+        howText: "Keep the ball alive, crack the full wall, and clear every brick before you run out of relaunches.",
+        buttons: ["Left", "Right", "Launch"]
+      },
+      rebounce: {
+        eyebrow: "Rebound arena",
+        title: "Rebounce Game",
+        intro: "Original browser rebound defense with a vertical paddle, target bank, and aggressive re-serves.",
+        action: "Serve",
+        reset: "Restart Rebound",
+        controlsText: "Keyboard: arrows or W and S move the paddle. Mouse: click to set paddle height. Serve launches or sharpens the current angle.",
+        howText: "Protect the left wall, rebound the ball across the arena, and wipe out the target bank on the right.",
+        buttons: ["Up", "Down", "Serve"]
+      },
+      vikings: {
+        eyebrow: "Dice adventure",
+        title: "Vikings YaMBdventure",
+        intro: "Original browser dice raid with longship lanes, combo scoring, and short voyage management.",
+        action: "Raid",
+        reset: "Restart Voyage",
+        controlsText: "Keyboard: left and right choose a lane, space launches the next raid. Mouse: click a lane to steer the longship. Raid rolls the dice for the current turn.",
+        howText: "Work through the voyage turn by turn. Strong dice combos bank raid points and push the ship toward buried chest bonuses.",
+        buttons: ["Lane Left", "Lane Right", "Raid"]
+      },
   }
 
   state.promptScore = score;
@@ -2645,7 +2724,7 @@ function createHopperGame() {
   };
 }
 
-function createSerpentGame() {
+function createSerpentGame(appId = "serpent") {
   const cols = 18;
   const rows = 10;
   const cell = 40;
@@ -2725,7 +2804,7 @@ function createSerpentGame() {
       stateSerpent.stepClock = 0;
       stateSerpent.boost = 0;
       stateSerpent.gameOver = false;
-      stateSerpent.status = currentUi().arcadeApps.serpent.howText;
+      stateSerpent.status = currentArcadeText(appId).howText;
     },
     update(dt) {
       if (stateSerpent.gameOver) {
@@ -2741,7 +2820,7 @@ function createSerpentGame() {
     },
     render(ctx, canvas) {
       clearArcadeCanvas(ctx, canvas);
-      drawLabel(ctx, "Neon Snake", 28, 38, 28);
+      drawLabel(ctx, currentArcadeText(appId).title, 28, 38, 28);
       drawRoundedRect(ctx, offsetX - 10, offsetY - 10, cols * cell + 20, rows * cell + 20, 22, "rgba(255,255,255,0.04)");
       ctx.strokeStyle = "rgba(255,255,255,0.08)";
       ctx.lineWidth = 1;
@@ -2802,11 +2881,11 @@ function createSerpentGame() {
     },
     controls() {
       return [
-        { label: currentUi().arcadeApps.serpent.buttons[0], onClick: () => setDirection(0, -1) },
-        { label: currentUi().arcadeApps.serpent.buttons[1], onClick: () => setDirection(-1, 0) },
-        { label: currentUi().arcadeApps.serpent.buttons[2], onClick: () => setDirection(1, 0) },
-        { label: currentUi().arcadeApps.serpent.buttons[3], onClick: () => setDirection(0, 1) },
-        { label: currentUi().arcadeApps.serpent.buttons[4], onClick: () => this.action(), wide: true }
+        { label: currentArcadeText(appId).buttons[0], onClick: () => setDirection(0, -1) },
+        { label: currentArcadeText(appId).buttons[1], onClick: () => setDirection(-1, 0) },
+        { label: currentArcadeText(appId).buttons[2], onClick: () => setDirection(1, 0) },
+        { label: currentArcadeText(appId).buttons[3], onClick: () => setDirection(0, 1) },
+        { label: currentArcadeText(appId).buttons[4], onClick: () => this.action(), wide: true }
       ];
     },
     getScore() {
@@ -2817,6 +2896,816 @@ function createSerpentGame() {
     },
     debug() {
       return { score: stateSerpent.score, length: stateSerpent.snake.length, gameOver: stateSerpent.gameOver };
+    }
+  };
+}
+
+function createArcade16Game() {
+  const stateRemix = { player: { x: 440, y: 260, tx: 440, ty: 260 }, drones: [], shards: [], score: 0, hull: 4, pulse: 0, spawn: 0.8, status: "" };
+
+  function refillWave() {
+    stateRemix.shards = Array.from({ length: 16 }, () => ({ x: randomBetween(90, 790), y: randomBetween(90, 430) }));
+    stateRemix.drones = Array.from({ length: 4 }, () => ({ x: randomBetween(80, 820), y: randomBetween(70, 460), speed: randomBetween(60, 100) }));
+  }
+
+  return {
+    reset() {
+      stateRemix.player = { x: 440, y: 260, tx: 440, ty: 260 };
+      stateRemix.score = 0;
+      stateRemix.hull = 4;
+      stateRemix.pulse = 0;
+      stateRemix.spawn = 0.8;
+      stateRemix.status = currentArcadeText("arcade16").howText;
+      refillWave();
+    },
+    update(dt, input) {
+      if (stateRemix.hull <= 0) {
+        return;
+      }
+      let dx = 0;
+      let dy = 0;
+      if (input.keys.has("ArrowLeft") || input.keys.has("a")) dx -= 1;
+      if (input.keys.has("ArrowRight") || input.keys.has("d")) dx += 1;
+      if (input.keys.has("ArrowUp") || input.keys.has("w")) dy -= 1;
+      if (input.keys.has("ArrowDown") || input.keys.has("s")) dy += 1;
+      if (dx || dy) {
+        const length = Math.hypot(dx, dy) || 1;
+        stateRemix.player.x += (dx / length) * 180 * dt;
+        stateRemix.player.y += (dy / length) * 180 * dt;
+      } else {
+        const mx = stateRemix.player.tx - stateRemix.player.x;
+        const my = stateRemix.player.ty - stateRemix.player.y;
+        const dist = Math.hypot(mx, my);
+        if (dist > 6) {
+          stateRemix.player.x += (mx / dist) * 180 * dt;
+          stateRemix.player.y += (my / dist) * 180 * dt;
+        }
+      }
+      stateRemix.player.x = clamp(stateRemix.player.x, 34, 846);
+      stateRemix.player.y = clamp(stateRemix.player.y, 34, 486);
+      stateRemix.pulse = Math.max(0, stateRemix.pulse - dt);
+      stateRemix.spawn -= dt;
+      if (stateRemix.spawn <= 0) {
+        stateRemix.spawn = smokeMode ? 1.1 : randomBetween(0.9, 1.4);
+        stateRemix.drones.push({ x: Math.random() > 0.5 ? 40 : 840, y: randomBetween(60, 460), speed: randomBetween(68, 112) });
+      }
+      stateRemix.drones.forEach((drone) => {
+        const dist = distance(drone.x, drone.y, stateRemix.player.x, stateRemix.player.y) || 1;
+        drone.x += ((stateRemix.player.x - drone.x) / dist) * drone.speed * dt;
+        drone.y += ((stateRemix.player.y - drone.y) / dist) * drone.speed * dt;
+      });
+      stateRemix.shards = stateRemix.shards.filter((shard) => {
+        if (distance(shard.x, shard.y, stateRemix.player.x, stateRemix.player.y) < 18) {
+          stateRemix.score += 8;
+          stateRemix.status = `${16 - stateRemix.shards.length + 1} / 16 shards secured.`;
+          return false;
+        }
+        return true;
+      });
+      stateRemix.drones = stateRemix.drones.filter((drone) => {
+        if (distance(drone.x, drone.y, stateRemix.player.x, stateRemix.player.y) < 18) {
+          stateRemix.hull -= 1;
+          stateRemix.status = stateRemix.hull > 0 ? `Drone impact. ${stateRemix.hull} hull left.` : "Collector down. Reset to relaunch.";
+          return false;
+        }
+        return true;
+      });
+      if (stateRemix.shards.length === 0) {
+        stateRemix.score += 40;
+        stateRemix.status = "Full set secured. Fresh wave deployed.";
+        refillWave();
+      }
+    },
+    render(ctx, canvas) {
+      clearArcadeCanvas(ctx, canvas);
+      drawLabel(ctx, currentArcadeText("arcade16").title, 28, 38, 28);
+      stateRemix.shards.forEach((shard) => {
+        ctx.fillStyle = "#ffd166";
+        ctx.beginPath();
+        ctx.moveTo(shard.x, shard.y - 8);
+        ctx.lineTo(shard.x + 8, shard.y);
+        ctx.lineTo(shard.x, shard.y + 8);
+        ctx.lineTo(shard.x - 8, shard.y);
+        ctx.closePath();
+        ctx.fill();
+      });
+      stateRemix.drones.forEach((drone) => {
+        drawRoundedRect(ctx, drone.x - 11, drone.y - 11, 22, 22, 8, "#ff6f7f");
+      });
+      ctx.fillStyle = "#1fd5c4";
+      ctx.beginPath();
+      ctx.arc(stateRemix.player.x, stateRemix.player.y, 14, 0, Math.PI * 2);
+      ctx.fill();
+      if (stateRemix.pulse > 0.2) {
+        ctx.strokeStyle = "rgba(122, 199, 255, 0.68)";
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.arc(stateRemix.player.x, stateRemix.player.y, 70, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      drawLabel(ctx, `Hull: ${stateRemix.hull}`, 770, 36, 18, "#ffd166");
+    },
+    pointerDown(point) {
+      stateRemix.player.tx = point.x;
+      stateRemix.player.ty = point.y;
+    },
+    pointerMove(point) {
+      stateRemix.player.tx = point.x;
+      stateRemix.player.ty = point.y;
+    },
+    keyDown(key) {
+      if (key === " " || key === "Enter") this.action();
+    },
+    action() {
+      if (stateRemix.hull <= 0) {
+        return;
+      }
+      stateRemix.pulse = 0.45;
+      let cleared = 0;
+      stateRemix.drones = stateRemix.drones.filter((drone) => {
+        if (distance(drone.x, drone.y, stateRemix.player.x, stateRemix.player.y) < 82) {
+          cleared += 1;
+          return false;
+        }
+        return true;
+      });
+      if (cleared > 0) {
+        stateRemix.score += cleared * 12;
+        stateRemix.status = `Pulse cleared ${cleared} drone${cleared > 1 ? "s" : ""}.`;
+      }
+    },
+    controls() {
+      return [
+        { label: currentArcadeText("arcade16").buttons[0], onClick: () => { stateRemix.player.tx = 440; stateRemix.player.ty = 260; } },
+        { label: currentArcadeText("arcade16").buttons[1], onClick: () => this.action(), wide: true }
+      ];
+    },
+    getScore() {
+      return stateRemix.score;
+    },
+    getStatus() {
+      return stateRemix.status;
+    },
+    debug() {
+      return { score: stateRemix.score, hull: stateRemix.hull, shards: stateRemix.shards.length };
+    }
+  };
+}
+
+function createTwoDGame() {
+  const map = [
+    "###############",
+    "#.............#",
+    "#.###.###.###.#",
+    "#.............#",
+    "#.##.#####.##.#",
+    "#.............#",
+    "#.###.#.#.###.#",
+    "#.............#",
+    "###############"
+  ];
+  const cell = 44;
+  const offsetX = 120;
+  const offsetY = 62;
+  const stateMaze = { player: { x: 1, y: 1 }, ghost: { x: 13, y: 7 }, dir: { x: 1, y: 0 }, nextDir: { x: 1, y: 0 }, pellets: new Set(), lives: 3, score: 0, stepClock: 0, stun: 0, status: "" };
+
+  function keyFor(x, y) {
+    return `${x}:${y}`;
+  }
+
+  function loadPellets() {
+    stateMaze.pellets = new Set();
+    for (let y = 0; y < map.length; y += 1) {
+      for (let x = 0; x < map[y].length; x += 1) {
+        if (map[y][x] === ".") {
+          stateMaze.pellets.add(keyFor(x, y));
+        }
+      }
+    }
+  }
+
+  function walkable(x, y) {
+    return map[y] && map[y][x] !== "#";
+  }
+
+  function tryStep(actor, dir) {
+    const nextX = actor.x + dir.x;
+    const nextY = actor.y + dir.y;
+    if (walkable(nextX, nextY)) {
+      actor.x = nextX;
+      actor.y = nextY;
+      return true;
+    }
+    return false;
+  }
+
+  function resetActors() {
+    stateMaze.player = { x: 1, y: 1 };
+    stateMaze.ghost = { x: 13, y: 7 };
+    stateMaze.dir = { x: 1, y: 0 };
+    stateMaze.nextDir = { x: 1, y: 0 };
+  }
+
+  function setDirection(x, y) {
+    stateMaze.nextDir = { x, y };
+  }
+
+  function moveGhost() {
+    const options = [
+      { x: 1, y: 0 },
+      { x: -1, y: 0 },
+      { x: 0, y: 1 },
+      { x: 0, y: -1 }
+    ].filter((dir) => walkable(stateMaze.ghost.x + dir.x, stateMaze.ghost.y + dir.y));
+    const best = options.sort((left, right) => {
+      const leftDist = distance(stateMaze.ghost.x + left.x, stateMaze.ghost.y + left.y, stateMaze.player.x, stateMaze.player.y);
+      const rightDist = distance(stateMaze.ghost.x + right.x, stateMaze.ghost.y + right.y, stateMaze.player.x, stateMaze.player.y);
+      return stateMaze.stun > 0 ? rightDist - leftDist : leftDist - rightDist;
+    })[0];
+    if (best) {
+      stateMaze.ghost.x += best.x;
+      stateMaze.ghost.y += best.y;
+    }
+  }
+
+  return {
+    reset() {
+      stateMaze.lives = 3;
+      stateMaze.score = 0;
+      stateMaze.stepClock = 0;
+      stateMaze.stun = 0;
+      stateMaze.status = currentArcadeText("twod").howText;
+      resetActors();
+      loadPellets();
+    },
+    update(dt) {
+      if (stateMaze.lives <= 0) {
+        return;
+      }
+      stateMaze.stun = Math.max(0, stateMaze.stun - dt);
+      stateMaze.stepClock += dt;
+      if (stateMaze.stepClock < 0.16) {
+        return;
+      }
+      stateMaze.stepClock = 0;
+      if (!tryStep(stateMaze.player, stateMaze.nextDir)) {
+        tryStep(stateMaze.player, stateMaze.dir);
+      } else {
+        stateMaze.dir = { ...stateMaze.nextDir };
+      }
+      const pelletKey = keyFor(stateMaze.player.x, stateMaze.player.y);
+      if (stateMaze.pellets.has(pelletKey)) {
+        stateMaze.pellets.delete(pelletKey);
+        stateMaze.score += 5;
+        stateMaze.status = "Pellet cleared.";
+      }
+      moveGhost();
+      if (stateMaze.player.x === stateMaze.ghost.x && stateMaze.player.y === stateMaze.ghost.y) {
+        if (stateMaze.stun > 0) {
+          stateMaze.score += 20;
+          stateMaze.ghost = { x: 13, y: 7 };
+          stateMaze.status = "Hunter stunned.";
+        } else {
+          stateMaze.lives -= 1;
+          stateMaze.status = stateMaze.lives > 0 ? `Tagged. ${stateMaze.lives} life left.` : "Maze locked. Reset to restart.";
+          resetActors();
+        }
+      }
+      if (stateMaze.pellets.size === 0) {
+        stateMaze.score += 30;
+        loadPellets();
+        resetActors();
+        stateMaze.status = "Maze swept. Fresh pellets loaded.";
+      }
+    },
+    render(ctx, canvas) {
+      clearArcadeCanvas(ctx, canvas);
+      drawLabel(ctx, currentArcadeText("twod").title, 28, 38, 28);
+      for (let y = 0; y < map.length; y += 1) {
+        for (let x = 0; x < map[y].length; x += 1) {
+          const px = offsetX + x * cell;
+          const py = offsetY + y * cell;
+          if (map[y][x] === "#") {
+            drawRoundedRect(ctx, px, py, cell - 4, cell - 4, 10, "rgba(122,199,255,0.22)");
+          } else if (stateMaze.pellets.has(keyFor(x, y))) {
+            ctx.fillStyle = "#ffd166";
+            ctx.beginPath();
+            ctx.arc(px + 20, py + 20, 4, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+      ctx.fillStyle = "#1fd5c4";
+      ctx.beginPath();
+      ctx.arc(offsetX + stateMaze.player.x * cell + 20, offsetY + stateMaze.player.y * cell + 20, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = stateMaze.stun > 0 ? "#bbcae4" : "#ff6f7f";
+      ctx.beginPath();
+      ctx.arc(offsetX + stateMaze.ghost.x * cell + 20, offsetY + stateMaze.ghost.y * cell + 20, 14, 0, Math.PI * 2);
+      ctx.fill();
+      drawLabel(ctx, `Lives: ${stateMaze.lives}`, 770, 36, 18, "#ffd166");
+    },
+    pointerDown(point) {
+      const playerX = offsetX + stateMaze.player.x * cell + 20;
+      const playerY = offsetY + stateMaze.player.y * cell + 20;
+      const dx = point.x - playerX;
+      const dy = point.y - playerY;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        setDirection(dx >= 0 ? 1 : -1, 0);
+      } else {
+        setDirection(0, dy >= 0 ? 1 : -1);
+      }
+    },
+    keyDown(key) {
+      if (key === "ArrowUp" || key === "w") setDirection(0, -1);
+      if (key === "ArrowLeft" || key === "a") setDirection(-1, 0);
+      if (key === "ArrowRight" || key === "d") setDirection(1, 0);
+      if (key === "ArrowDown" || key === "s") setDirection(0, 1);
+      if (key === " " || key === "Enter") this.action();
+    },
+    action() {
+      if (stateMaze.lives <= 0) {
+        return;
+      }
+      stateMaze.stun = 1.2;
+      stateMaze.status = "Burst armed.";
+    },
+    controls() {
+      return [
+        { label: currentArcadeText("twod").buttons[0], onClick: () => setDirection(0, -1) },
+        { label: currentArcadeText("twod").buttons[1], onClick: () => setDirection(-1, 0) },
+        { label: currentArcadeText("twod").buttons[2], onClick: () => setDirection(1, 0) },
+        { label: currentArcadeText("twod").buttons[3], onClick: () => setDirection(0, 1) },
+        { label: currentArcadeText("twod").buttons[4], onClick: () => this.action(), wide: true }
+      ];
+    },
+    getScore() {
+      return stateMaze.score;
+    },
+    getStatus() {
+      return stateMaze.status;
+    },
+    debug() {
+      return { score: stateMaze.score, lives: stateMaze.lives, pellets: stateMaze.pellets.size };
+    }
+  };
+}
+
+function createAteriGame() {
+  const stateShooter = { shipX: 440, targetX: 440, bullets: [], enemies: [], score: 0, lives: 3, spawn: 0.6, pattern: 0, status: "" };
+  const patterns = [
+    [160, 300, 440, 580, 720],
+    [220, 360, 500, 640],
+    [160, 250, 340, 430, 520, 610, 700],
+    [260, 440, 620],
+    [180, 440, 700]
+  ];
+
+  function spawnWave() {
+    const positions = patterns[stateShooter.pattern % patterns.length];
+    stateShooter.enemies.push(...positions.map((x, index) => ({ x, y: -30 - index * 26, vx: (index % 2 === 0 ? 1 : -1) * 24, vy: randomBetween(58, 92) })));
+    stateShooter.pattern += 1;
+  }
+
+  return {
+    reset() {
+      stateShooter.shipX = 440;
+      stateShooter.targetX = 440;
+      stateShooter.bullets = [];
+      stateShooter.enemies = [];
+      stateShooter.score = 0;
+      stateShooter.lives = 3;
+      stateShooter.spawn = 0.5;
+      stateShooter.pattern = 0;
+      stateShooter.status = currentArcadeText("ateri").howText;
+    },
+    update(dt, input) {
+      if (stateShooter.lives <= 0) {
+        return;
+      }
+      let move = 0;
+      if (input.keys.has("ArrowLeft") || input.keys.has("a")) move -= 1;
+      if (input.keys.has("ArrowRight") || input.keys.has("d")) move += 1;
+      if (move !== 0) {
+        stateShooter.shipX += move * 220 * dt;
+      } else {
+        stateShooter.shipX += (stateShooter.targetX - stateShooter.shipX) * Math.min(dt * 5, 1);
+      }
+      stateShooter.shipX = clamp(stateShooter.shipX, 70, 810);
+      stateShooter.spawn -= dt;
+      if (stateShooter.spawn <= 0) {
+        stateShooter.spawn = smokeMode ? 0.9 : randomBetween(0.7, 1.05);
+        spawnWave();
+      }
+      stateShooter.bullets.forEach((bullet) => {
+        bullet.y -= 340 * dt;
+      });
+      stateShooter.enemies.forEach((enemy) => {
+        enemy.x += enemy.vx * dt;
+        enemy.y += enemy.vy * dt;
+        if (enemy.x < 80 || enemy.x > 820) {
+          enemy.vx *= -1;
+        }
+      });
+      stateShooter.bullets = stateShooter.bullets.filter((bullet) => bullet.y > -20);
+      stateShooter.enemies = stateShooter.enemies.filter((enemy) => {
+        const hit = stateShooter.bullets.find((bullet) => Math.abs(bullet.x - enemy.x) < 24 && Math.abs(bullet.y - enemy.y) < 18);
+        if (hit) {
+          stateShooter.bullets = stateShooter.bullets.filter((bullet) => bullet !== hit);
+          stateShooter.score += 15;
+          stateShooter.status = "Formation clipped.";
+          return false;
+        }
+        if (enemy.y > 470) {
+          stateShooter.lives -= 1;
+          stateShooter.status = stateShooter.lives > 0 ? `Hangar breach. ${stateShooter.lives} life left.` : "Orbit lost. Reset to relaunch.";
+          return false;
+        }
+        return true;
+      });
+    },
+    render(ctx, canvas) {
+      clearArcadeCanvas(ctx, canvas);
+      drawLabel(ctx, currentArcadeText("ateri").title, 28, 38, 28);
+      drawRoundedRect(ctx, stateShooter.shipX - 24, 452, 48, 22, 8, "#1fd5c4");
+      ctx.fillStyle = "#7ac7ff";
+      ctx.beginPath();
+      ctx.moveTo(stateShooter.shipX, 418);
+      ctx.lineTo(stateShooter.shipX + 18, 452);
+      ctx.lineTo(stateShooter.shipX - 18, 452);
+      ctx.closePath();
+      ctx.fill();
+      stateShooter.bullets.forEach((bullet) => {
+        drawRoundedRect(ctx, bullet.x - 3, bullet.y - 10, 6, 18, 4, "#ffd166");
+      });
+      stateShooter.enemies.forEach((enemy) => {
+        drawRoundedRect(ctx, enemy.x - 18, enemy.y - 12, 36, 24, 8, "#ff6f7f");
+      });
+      drawLabel(ctx, `Lives: ${stateShooter.lives}`, 770, 36, 18, "#ffd166");
+    },
+    pointerDown(point) {
+      stateShooter.targetX = point.x;
+    },
+    pointerMove(point) {
+      stateShooter.targetX = point.x;
+    },
+    keyDown(key) {
+      if (key === " " || key === "Enter") this.action();
+    },
+    action() {
+      if (stateShooter.lives <= 0) {
+        return;
+      }
+      stateShooter.bullets.push({ x: stateShooter.shipX, y: 430 });
+      stateShooter.status = "Shot fired.";
+    },
+    controls() {
+      return [
+        { label: currentArcadeText("ateri").buttons[0], onClick: () => { stateShooter.shipX = clamp(stateShooter.shipX - 40, 70, 810); } },
+        { label: currentArcadeText("ateri").buttons[1], onClick: () => { stateShooter.shipX = clamp(stateShooter.shipX + 40, 70, 810); } },
+        { label: currentArcadeText("ateri").buttons[2], onClick: () => this.action(), wide: true }
+      ];
+    },
+    getScore() {
+      return stateShooter.score;
+    },
+    getStatus() {
+      return stateShooter.status;
+    },
+    debug() {
+      return { score: stateShooter.score, lives: stateShooter.lives, enemies: stateShooter.enemies.length };
+    }
+  };
+}
+
+function createArkanoidGame() {
+  const stateBreaker = { paddleX: 440, ball: null, bricks: [], score: 0, lives: 3, status: "" };
+
+  function buildBricks() {
+    stateBreaker.bricks = [];
+    for (let row = 0; row < 4; row += 1) {
+      for (let col = 0; col < 8; col += 1) {
+        stateBreaker.bricks.push({ x: 90 + col * 92, y: 84 + row * 36, w: 76, h: 22, hits: row < 2 ? 1 : 2 });
+      }
+    }
+  }
+
+  function resetBall() {
+    stateBreaker.ball = { x: stateBreaker.paddleX, y: 420, vx: 170, vy: -190, stuck: true };
+  }
+
+  return {
+    reset() {
+      stateBreaker.paddleX = 440;
+      stateBreaker.score = 0;
+      stateBreaker.lives = 3;
+      stateBreaker.status = currentArcadeText("arkanoid").howText;
+      buildBricks();
+      resetBall();
+    },
+    update(dt, input) {
+      if (stateBreaker.lives <= 0) {
+        return;
+      }
+      if (input.keys.has("ArrowLeft") || input.keys.has("a")) stateBreaker.paddleX -= 260 * dt;
+      if (input.keys.has("ArrowRight") || input.keys.has("d")) stateBreaker.paddleX += 260 * dt;
+      stateBreaker.paddleX = clamp(stateBreaker.paddleX, 100, 800);
+      if (stateBreaker.ball.stuck) {
+        stateBreaker.ball.x = stateBreaker.paddleX;
+        return;
+      }
+      stateBreaker.ball.x += stateBreaker.ball.vx * dt;
+      stateBreaker.ball.y += stateBreaker.ball.vy * dt;
+      if (stateBreaker.ball.x < 40 || stateBreaker.ball.x > 860) stateBreaker.ball.vx *= -1;
+      if (stateBreaker.ball.y < 50) stateBreaker.ball.vy *= -1;
+      if (stateBreaker.ball.y > 520) {
+        stateBreaker.lives -= 1;
+        stateBreaker.status = stateBreaker.lives > 0 ? `Ball lost. ${stateBreaker.lives} life left.` : "Breaker ended. Reset to restart.";
+        resetBall();
+        return;
+      }
+      if (stateBreaker.ball.y > 438 && Math.abs(stateBreaker.ball.x - stateBreaker.paddleX) < 62 && stateBreaker.ball.vy > 0) {
+        stateBreaker.ball.vy = -Math.abs(stateBreaker.ball.vy);
+        stateBreaker.ball.vx += (stateBreaker.ball.x - stateBreaker.paddleX) * 1.6;
+      }
+      stateBreaker.bricks = stateBreaker.bricks.filter((brick) => {
+        const hit = stateBreaker.ball.x > brick.x && stateBreaker.ball.x < brick.x + brick.w && stateBreaker.ball.y > brick.y && stateBreaker.ball.y < brick.y + brick.h;
+        if (hit) {
+          stateBreaker.ball.vy *= -1;
+          brick.hits -= 1;
+          stateBreaker.score += 12;
+          if (brick.hits <= 0) {
+            stateBreaker.status = "Brick wall cracked.";
+            return false;
+          }
+        }
+        return true;
+      });
+      if (stateBreaker.bricks.length === 0) {
+        stateBreaker.score += 60;
+        stateBreaker.status = "Wall cleared. Fresh stack deployed.";
+        buildBricks();
+        resetBall();
+      }
+    },
+    render(ctx, canvas) {
+      clearArcadeCanvas(ctx, canvas);
+      drawLabel(ctx, currentArcadeText("arkanoid").title, 28, 38, 28);
+      stateBreaker.bricks.forEach((brick) => {
+        drawRoundedRect(ctx, brick.x, brick.y, brick.w, brick.h, 8, brick.hits === 2 ? "#7ac7ff" : "#ff8c1a");
+      });
+      drawRoundedRect(ctx, stateBreaker.paddleX - 58, 446, 116, 18, 8, "#1fd5c4");
+      ctx.fillStyle = "#ffd166";
+      ctx.beginPath();
+      ctx.arc(stateBreaker.ball.x, stateBreaker.ball.y, 9, 0, Math.PI * 2);
+      ctx.fill();
+      drawLabel(ctx, `Lives: ${stateBreaker.lives}`, 770, 36, 18, "#ffd166");
+    },
+    pointerDown(point) {
+      stateBreaker.paddleX = clamp(point.x, 100, 800);
+    },
+    pointerMove(point) {
+      stateBreaker.paddleX = clamp(point.x, 100, 800);
+    },
+    keyDown(key) {
+      if (key === " " || key === "Enter") this.action();
+    },
+    action() {
+      if (stateBreaker.lives <= 0) {
+        return;
+      }
+      if (stateBreaker.ball.stuck) {
+        stateBreaker.ball.stuck = false;
+        stateBreaker.status = "Ball launched.";
+      } else {
+        stateBreaker.ball.vx *= 1.06;
+        stateBreaker.ball.vy *= 1.06;
+        stateBreaker.status = "Ball pace raised.";
+      }
+    },
+    controls() {
+      return [
+        { label: currentArcadeText("arkanoid").buttons[0], onClick: () => { stateBreaker.paddleX = clamp(stateBreaker.paddleX - 50, 100, 800); } },
+        { label: currentArcadeText("arkanoid").buttons[1], onClick: () => { stateBreaker.paddleX = clamp(stateBreaker.paddleX + 50, 100, 800); } },
+        { label: currentArcadeText("arkanoid").buttons[2], onClick: () => this.action(), wide: true }
+      ];
+    },
+    getScore() {
+      return stateBreaker.score;
+    },
+    getStatus() {
+      return stateBreaker.status;
+    },
+    debug() {
+      return { score: stateBreaker.score, lives: stateBreaker.lives, bricks: stateBreaker.bricks.length };
+    }
+  };
+}
+
+function createRebounceGame() {
+  const stateBounce = { paddleY: 260, ball: null, targets: [], score: 0, lives: 3, status: "" };
+
+  function rebuildTargets() {
+    stateBounce.targets = Array.from({ length: 6 }, (_, index) => ({ x: 760, y: 90 + index * 62, alive: true }));
+  }
+
+  function resetBall() {
+    stateBounce.ball = { x: 140, y: stateBounce.paddleY, vx: 220, vy: 120, stuck: true };
+  }
+
+  return {
+    reset() {
+      stateBounce.paddleY = 260;
+      stateBounce.score = 0;
+      stateBounce.lives = 3;
+      stateBounce.status = currentArcadeText("rebounce").howText;
+      rebuildTargets();
+      resetBall();
+    },
+    update(dt, input) {
+      if (stateBounce.lives <= 0) {
+        return;
+      }
+      if (input.keys.has("ArrowUp") || input.keys.has("w")) stateBounce.paddleY -= 220 * dt;
+      if (input.keys.has("ArrowDown") || input.keys.has("s")) stateBounce.paddleY += 220 * dt;
+      stateBounce.paddleY = clamp(stateBounce.paddleY, 90, 430);
+      if (stateBounce.ball.stuck) {
+        stateBounce.ball.x = 140;
+        stateBounce.ball.y = stateBounce.paddleY;
+        return;
+      }
+      stateBounce.ball.x += stateBounce.ball.vx * dt;
+      stateBounce.ball.y += stateBounce.ball.vy * dt;
+      if (stateBounce.ball.y < 34 || stateBounce.ball.y > 486) stateBounce.ball.vy *= -1;
+      if (stateBounce.ball.x > 860) stateBounce.ball.vx *= -1;
+      if (stateBounce.ball.x < 118 && Math.abs(stateBounce.ball.y - stateBounce.paddleY) < 54 && stateBounce.ball.vx < 0) {
+        stateBounce.ball.vx = Math.abs(stateBounce.ball.vx) + 12;
+        stateBounce.ball.vy += (stateBounce.ball.y - stateBounce.paddleY) * 1.1;
+      }
+      if (stateBounce.ball.x < 20) {
+        stateBounce.lives -= 1;
+        stateBounce.status = stateBounce.lives > 0 ? `Wall clipped. ${stateBounce.lives} life left.` : "Arena lost. Reset to restart.";
+        resetBall();
+        return;
+      }
+      stateBounce.targets.forEach((target) => {
+        if (target.alive && Math.abs(stateBounce.ball.x - target.x) < 18 && Math.abs(stateBounce.ball.y - target.y) < 24) {
+          target.alive = false;
+          stateBounce.ball.vx *= -1;
+          stateBounce.score += 18;
+          stateBounce.status = "Target shattered.";
+        }
+      });
+      if (stateBounce.targets.every((target) => !target.alive)) {
+        stateBounce.score += 50;
+        stateBounce.status = "Target bank cleared. Resetting wall.";
+        rebuildTargets();
+        resetBall();
+      }
+    },
+    render(ctx, canvas) {
+      clearArcadeCanvas(ctx, canvas);
+      drawLabel(ctx, currentArcadeText("rebounce").title, 28, 38, 28);
+      drawRoundedRect(ctx, 96, stateBounce.paddleY - 56, 18, 112, 8, "#1fd5c4");
+      stateBounce.targets.forEach((target) => {
+        if (target.alive) {
+          drawRoundedRect(ctx, target.x - 12, target.y - 22, 24, 44, 8, "#ff8c1a");
+        }
+      });
+      ctx.fillStyle = "#7ac7ff";
+      ctx.beginPath();
+      ctx.arc(stateBounce.ball.x, stateBounce.ball.y, 10, 0, Math.PI * 2);
+      ctx.fill();
+      drawLabel(ctx, `Lives: ${stateBounce.lives}`, 770, 36, 18, "#ffd166");
+    },
+    pointerDown(point) {
+      stateBounce.paddleY = clamp(point.y, 90, 430);
+    },
+    pointerMove(point) {
+      stateBounce.paddleY = clamp(point.y, 90, 430);
+    },
+    keyDown(key) {
+      if (key === " " || key === "Enter") this.action();
+    },
+    action() {
+      if (stateBounce.lives <= 0) {
+        return;
+      }
+      if (stateBounce.ball.stuck) {
+        stateBounce.ball.stuck = false;
+        stateBounce.status = "Serve launched.";
+      } else {
+        stateBounce.ball.vy += stateBounce.ball.vy >= 0 ? 26 : -26;
+        stateBounce.status = "Angle sharpened.";
+      }
+    },
+    controls() {
+      return [
+        { label: currentArcadeText("rebounce").buttons[0], onClick: () => { stateBounce.paddleY = clamp(stateBounce.paddleY - 38, 90, 430); } },
+        { label: currentArcadeText("rebounce").buttons[1], onClick: () => { stateBounce.paddleY = clamp(stateBounce.paddleY + 38, 90, 430); } },
+        { label: currentArcadeText("rebounce").buttons[2], onClick: () => this.action(), wide: true }
+      ];
+    },
+    getScore() {
+      return stateBounce.score;
+    },
+    getStatus() {
+      return stateBounce.status;
+    },
+    debug() {
+      return { score: stateBounce.score, lives: stateBounce.lives, targets: stateBounce.targets.filter((target) => target.alive).length };
+    }
+  };
+}
+
+function createVikingsGame() {
+  const stateRaid = { lane: 1, turn: 1, maxTurns: 8, dice: [1, 1, 1, 1], score: 0, progress: 0, chests: [18, 38, 60], status: "" };
+
+  function comboScore() {
+    const counts = new Map();
+    stateRaid.dice.forEach((value) => counts.set(value, (counts.get(value) || 0) + 1));
+    const values = [...counts.values()].sort((a, b) => b - a);
+    const sortedDice = [...stateRaid.dice].sort((a, b) => a - b).join("");
+    if (values[0] === 4) return 40;
+    if (values[0] === 3) return 28;
+    if (sortedDice === "1234" || sortedDice === "2345" || sortedDice === "3456") return 24;
+    return Math.max(...stateRaid.dice) * 3;
+  }
+
+  return {
+    reset() {
+      stateRaid.lane = 1;
+      stateRaid.turn = 1;
+      stateRaid.dice = [1, 1, 1, 1];
+      stateRaid.score = 0;
+      stateRaid.progress = 0;
+      stateRaid.chests = [18, 38, 60];
+      stateRaid.status = currentArcadeText("vikings").howText;
+    },
+    update() {},
+    render(ctx, canvas) {
+      clearArcadeCanvas(ctx, canvas);
+      drawLabel(ctx, currentArcadeText("vikings").title, 28, 38, 28);
+      [0, 1, 2].forEach((lane) => {
+        drawRoundedRect(ctx, 110 + lane * 220, 364, 180, 56, 16, lane === stateRaid.lane ? "rgba(255,140,26,0.18)" : "rgba(255,255,255,0.05)");
+      });
+      drawRoundedRect(ctx, 120 + stateRaid.lane * 220, 378, 160, 28, 12, "#1fd5c4");
+      stateRaid.dice.forEach((value, index) => {
+        drawRoundedRect(ctx, 180 + index * 110, 126, 70, 70, 16, "rgba(122,199,255,0.2)");
+        drawLabel(ctx, String(value), 210 + index * 110, 171, 28, "#f5f9ff");
+      });
+      drawRoundedRect(ctx, 120, 258, 660, 22, 12, "rgba(255,255,255,0.06)");
+      stateRaid.chests.forEach((marker) => {
+        const x = 120 + marker * 8;
+        drawRoundedRect(ctx, x, 250, 18, 38, 6, "#ffd166");
+      });
+      drawRoundedRect(ctx, 122, 260, clamp(stateRaid.progress * 8, 0, 646), 18, 10, "#ff8c1a");
+      drawLabel(ctx, `Turn ${Math.min(stateRaid.turn, stateRaid.maxTurns)} / ${stateRaid.maxTurns}`, 720, 36, 18, "#ffd166");
+    },
+    pointerDown(point) {
+      stateRaid.lane = point.x < 330 ? 0 : point.x < 550 ? 1 : 2;
+    },
+    keyDown(key) {
+      if (key === "ArrowLeft" || key === "a") stateRaid.lane = Math.max(0, stateRaid.lane - 1);
+      if (key === "ArrowRight" || key === "d") stateRaid.lane = Math.min(2, stateRaid.lane + 1);
+      if (key === " " || key === "Enter") this.action();
+    },
+    action() {
+      if (stateRaid.turn > stateRaid.maxTurns) {
+        return;
+      }
+      stateRaid.dice = Array.from({ length: 4 }, () => Math.floor(randomBetween(1, 7)));
+      const sorted = [...stateRaid.dice].sort((a, b) => b - a);
+      stateRaid.progress += sorted[0] + sorted[1] + stateRaid.lane * 2;
+      stateRaid.score += comboScore() + stateRaid.lane * 4;
+      stateRaid.chests = stateRaid.chests.filter((marker) => {
+        if (stateRaid.progress >= marker) {
+          stateRaid.score += 20;
+          return false;
+        }
+        return true;
+      });
+      stateRaid.status = `Raid turn ${stateRaid.turn} banked.`;
+      stateRaid.turn += 1;
+      if (stateRaid.turn > stateRaid.maxTurns) {
+        stateRaid.status = `Voyage complete. Final score ${stateRaid.score}.`;
+      }
+    },
+    controls() {
+      return [
+        { label: currentArcadeText("vikings").buttons[0], onClick: () => { stateRaid.lane = Math.max(0, stateRaid.lane - 1); } },
+        { label: currentArcadeText("vikings").buttons[1], onClick: () => { stateRaid.lane = Math.min(2, stateRaid.lane + 1); } },
+        { label: currentArcadeText("vikings").buttons[2], onClick: () => this.action(), wide: true }
+      ];
+    },
+    getScore() {
+      return stateRaid.score;
+    },
+    getStatus() {
+      return stateRaid.status;
+    },
+    debug() {
+      return { score: stateRaid.score, turn: stateRaid.turn, progress: stateRaid.progress };
     }
   };
 }
@@ -3211,6 +4100,13 @@ const arcadeFactories = {
   quest: createQuestGame,
   metro: createMetroGame,
   hopper: createHopperGame,
+  arcade16: createArcade16Game,
+  twod: createTwoDGame,
+  ateri: createAteriGame,
+  snakegame: () => createSerpentGame("snakegame"),
+  arkanoid: createArkanoidGame,
+  rebounce: createRebounceGame,
+  vikings: createVikingsGame,
   serpent: createSerpentGame,
   blade: createBladeGame,
   trail: createTrailGame,
@@ -3238,7 +4134,7 @@ function openApp(appId) {
 }
 
 function renderArcadeMeta() {
-  const appText = currentUi().arcadeApps[state.arcade.activeId];
+  const appText = currentArcadeText(state.arcade.activeId);
   const shellText = currentUi().arcadeShell;
   elements.arcadeEyebrow.textContent = appText.eyebrow;
   elements.arcadeTitle.textContent = appText.title;
