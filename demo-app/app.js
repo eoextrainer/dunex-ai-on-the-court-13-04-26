@@ -8,65 +8,140 @@ const REPO_REMIX_TILES = [
   {
     id: "arcade16",
     title: "Arcade 16",
-    subtitle: "Native browser remix built around a sixteen-shard survival sprint.",
-    genre: "Remix Collection",
-    description: "Collect all sixteen relic shards, pulse back drones, and survive long enough to trigger the next wave.",
-    button: "Open",
-    badge: "Remix"
+    subtitle: {
+      en: "Native browser remix built around a sixteen-shard survival sprint.",
+      fr: "Remix navigateur centre sur une survie a seize fragments.",
+      es: "Remix nativo de navegador basado en una supervivencia de dieciseis fragmentos.",
+      it: "Remix browser costruito attorno a una sopravvivenza da sedici frammenti."
+    },
+    genre: {
+      en: "Remix Collection",
+      fr: "Collection Remix",
+      es: "Coleccion Remix",
+      it: "Collezione Remix"
+    },
+    description: {
+      en: "Collect all sixteen relic shards, pulse back drones, and survive long enough to trigger the next wave.",
+      fr: "Ramasse les seize eclats, repousse les drones et tiens jusqu'a la vague suivante.",
+      es: "Recoge los dieciseis fragmentos, repele drones y sobrevive hasta la siguiente oleada.",
+      it: "Raccogli i sedici frammenti, respingi i droni e resisti fino all'ondata successiva."
+    },
+    button: { en: "Open", fr: "Ouvrir", es: "Abrir", it: "Apri" },
+    badge: { en: "Remix", fr: "Remix", es: "Remix", it: "Remix" }
   },
   {
     id: "twod",
     title: "2D Arcade Games",
-    subtitle: "Native browser maze-chase remix with pellets, patrols, and burst windows.",
-    genre: "Maze Chase",
-    description: "Sweep the maze, dodge the hunter, and trigger short stun bursts to clear the board.",
-    button: "Open",
-    badge: "Remix"
+    subtitle: {
+      en: "Native browser maze-chase remix with pellets, patrols, and burst windows.",
+      fr: "Remix navigateur de poursuite en labyrinthe avec pellets et fenetres de burst.",
+      es: "Remix nativo de laberinto con pellets, persecucion y ventanas de burst.",
+      it: "Remix browser di inseguimento nel labirinto con pellet e finestre burst."
+    },
+    genre: { en: "Maze Chase", fr: "Chasse Labyrinthe", es: "Caza Laberinto", it: "Caccia Labirinto" },
+    description: {
+      en: "Sweep the maze, dodge the hunter, and trigger short stun bursts to clear the board.",
+      fr: "Nettoie le labyrinthe, evade le chasseur et declenche des bursts pour ouvrir le passage.",
+      es: "Limpia el laberinto, esquiva al perseguidor y activa bursts para abrir huecos.",
+      it: "Ripulisci il labirinto, evita il cacciatore e attiva burst per creare aperture."
+    },
+    button: { en: "Open", fr: "Ouvrir", es: "Abrir", it: "Apri" },
+    badge: { en: "Remix", fr: "Remix", es: "Remix", it: "Remix" }
   },
   {
     id: "ateri",
     title: "ATERI-72",
-    subtitle: "Native browser shooter remix with cycling wave patterns and lane pressure.",
-    genre: "Retro Shooter",
-    description: "Slide across the hangar, fire through rotating formations, and keep the orbital lane intact.",
-    button: "Open",
-    badge: "Remix"
+    subtitle: {
+      en: "Native browser shooter remix with cycling wave patterns and lane pressure.",
+      fr: "Remix navigateur de shooter avec vagues cycliques et pression de ligne.",
+      es: "Remix nativo de shooter con oleadas ciclicas y presion de carril.",
+      it: "Remix browser shooter con ondate cicliche e pressione di corsia."
+    },
+    genre: { en: "Retro Shooter", fr: "Shooter Retro", es: "Shooter Retro", it: "Shooter Retro" },
+    description: {
+      en: "Slide across the hangar, fire through rotating formations, and keep the orbital lane intact.",
+      fr: "Glisse dans le hangar, traverse les formations et preserve la ligne orbitale.",
+      es: "Deslizate por el hangar, rompe formaciones y manten intacto el carril orbital.",
+      it: "Scivola nell'hangar, rompi le formazioni e mantieni integra la corsia orbitale."
+    },
+    button: { en: "Open", fr: "Ouvrir", es: "Abrir", it: "Apri" },
+    badge: { en: "Remix", fr: "Remix", es: "Remix", it: "Remix" }
   },
   {
     id: "snakegame",
     title: "SnakeGame",
-    subtitle: "Native browser snake run with fruit chains and speed boost control.",
-    genre: "Arcade Classic",
-    description: "Guide the glowing snake, stack fruit pickups, and boost without collapsing into your own trail.",
-    button: "Open",
-    badge: "Remix"
+    subtitle: {
+      en: "Native browser snake run with fruit chains and speed boost control.",
+      fr: "Course serpent navigateur avec chaines de fruits et boost de vitesse.",
+      es: "Carrera snake nativa con cadenas de fruta y control de boost.",
+      it: "Corsa snake browser con catene di frutti e boost di velocita."
+    },
+    genre: { en: "Arcade Classic", fr: "Classique Arcade", es: "Clasico Arcade", it: "Classico Arcade" },
+    description: {
+      en: "Guide the glowing snake, stack fruit pickups, and boost without collapsing into your own trail.",
+      fr: "Guide le serpent lumineux, enchaine les fruits et booste sans mordre ta trace.",
+      es: "Guia la serpiente luminosa, encadena fruta y boostea sin chocar con tu rastro.",
+      it: "Guida il serpente luminoso, concatena frutti e accelera senza colpire la tua traccia."
+    },
+    button: { en: "Open", fr: "Ouvrir", es: "Abrir", it: "Apri" },
+    badge: { en: "Remix", fr: "Remix", es: "Remix", it: "Remix" }
   },
   {
     id: "arkanoid",
     title: "Gemika Arkanoid",
-    subtitle: "Native browser brick-breaker remix with relaunches and pace scaling.",
-    genre: "Brick Breaker",
-    description: "Hold the paddle, crack layered brick walls, and relaunch the ball before the court resets.",
-    button: "Open",
-    badge: "Remix"
+    subtitle: {
+      en: "Native browser brick-breaker remix with relaunches and pace scaling.",
+      fr: "Remix navigateur casse-briques avec relances et rythme progressif.",
+      es: "Remix nativo brick-breaker con relanzamientos y ritmo creciente.",
+      it: "Remix browser brick-breaker con rilanci e ritmo crescente."
+    },
+    genre: { en: "Brick Breaker", fr: "Casse-Briques", es: "Rompebloques", it: "Brick Breaker" },
+    description: {
+      en: "Hold the paddle, crack layered brick walls, and relaunch the ball before the court resets.",
+      fr: "Tiens la raquette, casse les murs de briques et relance avant la reinitialisation.",
+      es: "Sostiene la pala, rompe muros de ladrillo y relanza antes del reinicio.",
+      it: "Controlla la racchetta, rompi i muri di mattoni e rilancia prima del reset."
+    },
+    button: { en: "Open", fr: "Ouvrir", es: "Abrir", it: "Apri" },
+    badge: { en: "Remix", fr: "Remix", es: "Remix", it: "Remix" }
   },
   {
     id: "rebounce",
     title: "Rebounce Game",
-    subtitle: "Native browser rebound defense with target walls and fast re-serves.",
-    genre: "Rebound Arena",
-    description: "Guard the left wall, keep the ball alive, and carve through the target bank on the far side.",
-    button: "Open",
-    badge: "Remix"
+    subtitle: {
+      en: "Native browser rebound defense with target walls and fast re-serves.",
+      fr: "Defense navigateur a rebonds avec murs cibles et remises rapides.",
+      es: "Defensa nativa de rebotes con muros objetivo y saques rapidos.",
+      it: "Difesa browser a rimbalzi con muri bersaglio e servizi rapidi."
+    },
+    genre: { en: "Rebound Arena", fr: "Arene Rebond", es: "Arena Rebote", it: "Arena Rimbalzo" },
+    description: {
+      en: "Guard the left wall, keep the ball alive, and carve through the target bank on the far side.",
+      fr: "Protege le mur gauche, garde la balle vivante et nettoie la banque de cibles.",
+      es: "Protege el muro izquierdo, manten viva la bola y limpia el banco de objetivos.",
+      it: "Proteggi il muro sinistro, tieni viva la palla e ripulisci il banco bersagli."
+    },
+    button: { en: "Open", fr: "Ouvrir", es: "Abrir", it: "Apri" },
+    badge: { en: "Remix", fr: "Remix", es: "Remix", it: "Remix" }
   },
   {
     id: "vikings",
     title: "Vikings YaMBdventure",
-    subtitle: "Native browser dice-raid remix with longship lanes and combo scoring.",
-    genre: "Dice Adventure",
-    description: "Shift the longship route, raid with fresh dice rolls, and bank combo points before the voyage ends.",
-    button: "Open",
-    badge: "Remix"
+    subtitle: {
+      en: "Native browser dice-raid remix with longship lanes and combo scoring.",
+      fr: "Remix navigateur de raid aux des avec voies de drakkar et combos.",
+      es: "Remix nativo de raid con dados, carriles de drakkar y combos.",
+      it: "Remix browser di raid ai dadi con corsie longship e combo."
+    },
+    genre: { en: "Dice Adventure", fr: "Aventure Des", es: "Aventura Dados", it: "Avventura Dadi" },
+    description: {
+      en: "Shift the longship route, raid with fresh dice rolls, and bank combo points before the voyage ends.",
+      fr: "Change la route du drakkar, lance le raid et banque les combos avant la fin du voyage.",
+      es: "Cambia la ruta del drakkar, lanza el raid y guarda combos antes del fin del viaje.",
+      it: "Cambia la rotta del longship, lancia il raid e accumula combo prima della fine del viaggio."
+    },
+    button: { en: "Open", fr: "Ouvrir", es: "Abrir", it: "Apri" },
+    badge: { en: "Remix", fr: "Remix", es: "Remix", it: "Remix" }
   }
 ];
 const COURSE_SECTIONS = ["learn", "builder", "lab", "truth", "quiz"];
@@ -1275,6 +1350,25 @@ function currentArcadeText(appId) {
   return currentUi().arcadeApps[appId] || uiText.en.arcadeApps[appId];
 }
 
+function resolveLocalizedValue(value) {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value[state.currentLang] || value.en || Object.values(value)[0];
+  }
+  return value;
+}
+
+function resolveGalleryApp(app) {
+  return {
+    ...app,
+    title: resolveLocalizedValue(app.title),
+    subtitle: resolveLocalizedValue(app.subtitle),
+    genre: resolveLocalizedValue(app.genre),
+    description: resolveLocalizedValue(app.description),
+    button: resolveLocalizedValue(app.button),
+    badge: resolveLocalizedValue(app.badge)
+  };
+}
+
 function setScreen(screenId) {
   state.currentScreen = screenId;
   Object.entries(elements.screens).forEach(([key, section]) => {
@@ -1320,19 +1414,20 @@ function renderGallery() {
 
   elements.appGrid.innerHTML = "";
   galleryApps.forEach((app) => {
+    const resolvedApp = resolveGalleryApp(app);
     const article = document.createElement("article");
     article.className = "app-card";
-    const actionMarkup = `<button class="gallery-btn primary" data-app="${app.id}">${app.button}</button>`;
-    const statusLabel = app.badge || "Live";
-    const statusClass = app.badge ? "source" : "live";
+    const actionMarkup = `<button class="gallery-btn primary" data-app="${resolvedApp.id}">${resolvedApp.button}</button>`;
+    const statusLabel = resolvedApp.badge || "Live";
+    const statusClass = resolvedApp.badge ? "source" : "live";
     article.innerHTML = `
       <div class="tile-badges">
         <span class="status-pill ${statusClass}">${statusLabel}</span>
-        <span class="genre-pill">${app.genre}</span>
+        <span class="genre-pill">${resolvedApp.genre}</span>
       </div>
-      <h3>${app.title}</h3>
-      <p class="app-subtitle">${app.subtitle}</p>
-      <p>${app.description}</p>
+      <h3>${resolvedApp.title}</h3>
+      <p class="app-subtitle">${resolvedApp.subtitle}</p>
+      <p>${resolvedApp.description}</p>
       <div class="app-meta">
         ${actionMarkup}
       </div>
