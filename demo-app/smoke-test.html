@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI on the Court Smoke Test</title>
+  <style>
+    :root {
+      --bg: #07111d;
+      --panel: #11233d;
+      --panel-2: #0d1a2d;
+      --line: rgba(255, 255, 255, 0.12);
+      --text: #f5f9ff;
+      --muted: #bbcae4;
+      --good: #63dd8d;
+      --bad: #ff6f7f;
+      --warn: #ffd166;
+      --accent: #1fd5c4;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(31, 213, 196, 0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(255, 140, 26, 0.18), transparent 32%),
+        linear-gradient(180deg, #06101b 0%, #10233d 100%);
+      padding: 24px;
+    }
+
+    .shell {
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(9, 18, 33, 0.86);
+      padding: 22px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+    }
+
+    button,
+    a {
+      font: inherit;
+    }
+
+    button,
+    .link-btn {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px 16px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    button.primary {
+      background: linear-gradient(90deg, #ff8c1a, #ffb347);
+      color: #17110c;
+      border-color: transparent;
+      font-weight: 800;
+    }
+
+    .meta {
+      color: var(--muted);
+    }
+
+    .summary {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .badge.pass {
+      color: #d9ffe6;
+      background: rgba(99, 221, 141, 0.16);
+      border-color: rgba(99, 221, 141, 0.45);
+    }
+
+    .badge.fail {
+      color: #ffe2e7;
+      background: rgba(255, 111, 127, 0.16);
+      border-color: rgba(255, 111, 127, 0.45);
+    }
+
+    .badge.running {
+      color: #fff0c2;
+      background: rgba(255, 209, 102, 0.14);
+      border-color: rgba(255, 209, 102, 0.35);
+    }
+
+    .results {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .result-row {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .result-row.pass {
+      border-color: rgba(99, 221, 141, 0.42);
+    }
+
+    .result-row.fail {
+      border-color: rgba(255, 111, 127, 0.42);
+    }
+
+    .result-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .result-status.pass {
+      color: var(--good);
+    }
+
+    .result-status.fail {
+      color: var(--bad);
+    }
+
+    iframe {
+      width: 100%;
+      min-height: 860px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: white;
+    }
+
+    code {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="panel">
+      <h1>Browser Smoke Test</h1>
+      <p class="meta">This page loads <code>index.html</code> in an iframe and runs a lightweight browser-native smoke test against the live UI. It is designed for local rehearsal and GitHub Pages verification without adding a frontend toolchain.</p>
+      <div class="actions">
+        <button class="primary" id="runBtn">Run Smoke Test</button>
+        <a class="link-btn" href="./index.html" target="_blank" rel="noreferrer">Open Demo App</a>
+      </div>
+      <div class="summary">
+        <span class="badge running" id="summaryBadge">Idle</span>
+        <span class="badge" id="passCount">Pass: 0</span>
+        <span class="badge" id="failCount">Fail: 0</span>
+      </div>
+      <div class="results" id="results"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Live App Frame</h2>
+      <p class="meta">The smoke test drives the same browser UI that will be opened for class and deployed through GitHub Pages.</p>
+      <iframe id="appFrame" src="./index.html" title="AI on the Court demo app"></iframe>
+    </section>
+  </div>
+
+  <script>
+    const frame = document.getElementById("appFrame");
+    const runBtn = document.getElementById("runBtn");
+    const resultsEl = document.getElementById("results");
+    const summaryBadge = document.getElementById("summaryBadge");
+    const passCountEl = document.getElementById("passCount");
+    const failCountEl = document.getElementById("failCount");
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function frameDoc() {
+      return frame.contentWindow.document;
+    }
+
+    function frameWin() {
+      return frame.contentWindow;
+    }
+
+    function assert(condition, message) {
+      if (!condition) {
+        throw new Error(message);
+      }
+    }
+
+    function updateSummary(passes, fails, status) {
+      passCountEl.textContent = `Pass: ${passes}`;
+      failCountEl.textContent = `Fail: ${fails}`;
+      summaryBadge.textContent = status;
+      summaryBadge.className = "badge";
+      if (status === "Running") {
+        summaryBadge.classList.add("running");
+      } else if (fails === 0 && passes > 0) {
+        summaryBadge.classList.add("pass");
+      } else if (fails > 0) {
+        summaryBadge.classList.add("fail");
+      }
+    }
+
+    function pushResult(name, passed, detail) {
+      const row = document.createElement("div");
+      row.className = `result-row ${passed ? "pass" : "fail"}`;
+      row.innerHTML = `
+        <div class="result-title">
+          <span>${name}</span>
+          <span class="result-status ${passed ? "pass" : "fail"}">${passed ? "PASS" : "FAIL"}</span>
+        </div>
+        <div class="meta">${detail}</div>
+      `;
+      resultsEl.appendChild(row);
+    }
+
+    async function reloadFrame() {
+      frame.src = `./index.html?ts=${Date.now()}`;
+      await new Promise((resolve) => {
+        frame.onload = () => resolve();
+      });
+    }
+
+    async function runTest(name, fn, counters) {
+      try {
+        const detail = await fn();
+        counters.pass += 1;
+        pushResult(name, true, detail || "Check passed.");
+      } catch (error) {
+        counters.fail += 1;
+        pushResult(name, false, error.message || String(error));
+      }
+      updateSummary(counters.pass, counters.fail, counters.fail > 0 ? "Completed with failures" : "Completed");
+    }
+
+    async function testHeroLoads() {
+      const title = frameDoc().getElementById("heroTitle");
+      assert(title, "Missing hero title element.");
+      assert(title.textContent.trim().length > 0, "Hero title is empty.");
+      const navButtons = frameDoc().querySelectorAll(".nav-btn");
+      assert(navButtons.length === 5, `Expected 5 section buttons, found ${navButtons.length}.`);
+      return `Hero title is visible and ${navButtons.length} section buttons were rendered.`;
+    }
+
+    async function testLanguageToggle() {
+      const frButton = frameDoc().querySelector('.lang-btn[data-lang="fr"]');
+      assert(frButton, "Missing French language button.");
+      frButton.click();
+      await sleep(50);
+      const title = frameDoc().getElementById("heroTitle").textContent;
+      assert(/Decouvre l'IA/.test(title), `Unexpected French hero title: ${title}`);
+      const enButton = frameDoc().querySelector('.lang-btn[data-lang="en"]');
+      enButton.click();
+      await sleep(50);
+      return "Language toggle switched to French and back to English.";
+    }
+
+    async function testShotClock() {
+      const set14Btn = frameDoc().getElementById("set14Btn");
+      const toggleBtn = frameDoc().getElementById("toggleClockBtn");
+      const resetBtn = frameDoc().getElementById("resetClockBtn");
+      const display = frameDoc().getElementById("shotClockDisplay");
+      set14Btn.click();
+      await sleep(60);
+      assert(display.textContent.trim() === "14", `Expected 14 after preset, got ${display.textContent.trim()}.`);
+      toggleBtn.click();
+      await sleep(1200);
+      const runningValue = Number(display.textContent.trim());
+      assert(runningValue <= 13, `Shot clock did not start, current value: ${runningValue}.`);
+      toggleBtn.click();
+      resetBtn.click();
+      await sleep(60);
+      assert(display.textContent.trim() === "14", `Expected 14 after reset, got ${display.textContent.trim()}.`);
+      return "Shot clock preset, start, pause, and reset all worked.";
+    }
+
+    async function testPromptLab() {
+      frameDoc().querySelector('.nav-btn[data-target="lab"]').click();
+      await sleep(60);
+      frameDoc().getElementById("loadExampleBtn").click();
+      frameDoc().getElementById("analyzePromptBtn").click();
+      await sleep(80);
+      const analysis = frameDoc().getElementById("analysisOutput").textContent;
+      const improved = frameDoc().getElementById("improvedOutput").textContent;
+      const score = Number(frameDoc().getElementById("promptScore").textContent.trim());
+      assert(/Score:|Score :/.test(analysis), `Prompt analysis did not render a score. Output: ${analysis}`);
+      assert(improved.length > 40, "Improved prompt output is too short.");
+      assert(score > 0, `Prompt score did not update. Current value: ${score}.`);
+      return `Prompt analysis rendered with prompt score ${score}.`;
+    }
+
+    async function testTruthCheck() {
+      frameDoc().querySelector('.nav-btn[data-target="truth"]').click();
+      await sleep(60);
+      const before = Number(frameDoc().getElementById("truthScore").textContent.trim());
+      frameDoc().getElementById("verifyBtn").click();
+      await sleep(60);
+      const feedback = frameDoc().getElementById("truthFeedback").textContent;
+      const after = Number(frameDoc().getElementById("truthScore").textContent.trim());
+      assert(feedback.length > 20, "Truth check feedback did not update.");
+      assert(after >= before, `Truth score moved backwards: before ${before}, after ${after}.`);
+      return `Truth check feedback rendered and score moved from ${before} to ${after}.`;
+    }
+
+    async function testQuiz() {
+      frameDoc().querySelector('.nav-btn[data-target="quiz"]').click();
+      await sleep(60);
+      const options = frameDoc().querySelectorAll("#quizOptions .quiz-option");
+      assert(options.length === 4, `Expected 4 quiz options, found ${options.length}.`);
+      options[1].click();
+      await sleep(60);
+      const feedback = frameDoc().getElementById("quizFeedback").textContent;
+      assert(feedback.trim().length > 0, "Quiz feedback did not render.");
+      return "Quiz options rendered and answering produced feedback.";
+    }
+
+    async function testPresentationMode() {
+      const body = frameDoc().body;
+      const toggle = frameDoc().getElementById("presentationToggleBtn");
+      toggle.click();
+      await sleep(60);
+      assert(body.classList.contains("presentation-mode"), "Presentation mode class was not added.");
+      toggle.click();
+      await sleep(60);
+      assert(!body.classList.contains("presentation-mode"), "Presentation mode class was not removed.");
+      return "Presentation mode toggled on and off.";
+    }
+
+    async function runAll() {
+      resultsEl.innerHTML = "";
+      updateSummary(0, 0, "Running");
+      runBtn.disabled = true;
+      await reloadFrame();
+      const counters = { pass: 0, fail: 0 };
+      await runTest("Hero and navigation render", testHeroLoads, counters);
+      await runTest("Language toggle works", testLanguageToggle, counters);
+      await runTest("Shot clock controls work", testShotClock, counters);
+      await runTest("Prompt lab analyzes input", testPromptLab, counters);
+      await runTest("Truth check updates feedback", testTruthCheck, counters);
+      await runTest("Quiz interaction renders feedback", testQuiz, counters);
+      await runTest("Presentation mode toggles cleanly", testPresentationMode, counters);
+      updateSummary(counters.pass, counters.fail, counters.fail > 0 ? "Completed with failures" : "Completed");
+      runBtn.disabled = false;
+    }
+
+    runBtn.addEventListener("click", runAll);
+    frame.addEventListener("load", () => updateSummary(0, 0, "Idle"), { once: true });
+  </script>
+</body>
+</html>

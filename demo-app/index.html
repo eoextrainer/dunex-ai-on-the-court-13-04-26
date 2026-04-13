@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI on the Court</title>
+  <style>
+    :root {
+      --bg: #08111f;
+      --bg-deep: #0c1b33;
+      --panel: rgba(11, 22, 42, 0.84);
+      --panel-strong: rgba(10, 19, 35, 0.96);
+      --line: rgba(255, 255, 255, 0.12);
+      --text: #f8fbff;
+      --muted: #c1cde3;
+      --accent: #ff8c1a;
+      --accent-2: #1fd5c4;
+      --danger: #ff6f7f;
+      --success: #63dd8d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      color: var(--text);
+      font-family: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(31, 213, 196, 0.18), transparent 24%),
+        radial-gradient(circle at top right, rgba(255, 140, 26, 0.24), transparent 28%),
+        linear-gradient(180deg, #06101b 0%, #11243f 100%);
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    body::before {
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.95), transparent);
+    }
+
+    body::after {
+      background:
+        radial-gradient(circle at 50% 110%, rgba(255, 255, 255, 0.06), transparent 35%),
+        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.04), transparent 28%);
+      opacity: 0.8;
+    }
+
+    body.presentation-mode {
+      font-size: 1.08rem;
+    }
+
+    .app-shell {
+      width: min(1180px, calc(100% - 28px));
+      margin: 22px auto 38px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .glass,
+    .hero,
+    .utility-bar,
+    .top-nav,
+    .panel,
+    .score-card,
+    .timer-card,
+    .tile,
+    .output-card,
+    .quiz-card,
+    .truth-card,
+    .coach-card {
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+      gap: 18px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      background:
+        linear-gradient(140deg, rgba(13, 26, 47, 0.95), rgba(8, 17, 31, 0.8)),
+        radial-gradient(circle at right top, rgba(255, 140, 26, 0.16), transparent 35%);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 800;
+      font-size: 0.78rem;
+      color: var(--accent-2);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 14px;
+      font-size: clamp(2.2rem, 5.6vw, 4.1rem);
+      line-height: 0.98;
+      max-width: 11ch;
+    }
+
+    h2 {
+      margin-bottom: 8px;
+      font-size: clamp(1.6rem, 3vw, 2.1rem);
+    }
+
+    h3 {
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+
+    .hero-text,
+    .panel-intro,
+    .muted,
+    .output-card p,
+    .truth-answer,
+    .quiz-feedback,
+    .kbd-hint,
+    .timer-note,
+    .presentation-note,
+    .score-label {
+      color: var(--muted);
+    }
+
+    .hero-actions,
+    .action-row,
+    .timer-actions,
+    .quiz-options,
+    .lang-switch,
+    .nav-wrap {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-actions {
+      margin: 18px 0 14px;
+    }
+
+    .hero-links {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .hero-link {
+      color: var(--accent-2);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .hero-link:hover {
+      text-decoration: underline;
+    }
+
+    .score-panel {
+      display: grid;
+      gap: 12px;
+    }
+
+    .score-card,
+    .timer-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .score-card strong {
+      display: block;
+      font-size: 2rem;
+      margin-top: 6px;
+    }
+
+    .utility-bar,
+    .top-nav {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(10, 19, 35, 0.78);
+      box-shadow: var(--shadow);
+    }
+
+    .utility-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .utility-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .presentation-badge {
+      display: none;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(99, 221, 141, 0.44);
+      background: rgba(99, 221, 141, 0.16);
+      color: #ceffe0;
+      font-size: 0.83rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    body.presentation-mode .presentation-badge {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    button,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .nav-btn,
+    .primary-btn,
+    .secondary-btn,
+    .lang-btn,
+    .quiz-option {
+      border: 0;
+      border-radius: 14px;
+      transition: transform 0.18s ease, background 0.18s ease, opacity 0.18s ease;
+    }
+
+    .nav-btn,
+    .secondary-btn,
+    .lang-btn,
+    .quiz-option {
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .nav-btn,
+    .lang-btn {
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .quiz-option {
+      padding: 12px 16px;
+      cursor: pointer;
+    }
+
+    .primary-btn {
+      background: linear-gradient(90deg, var(--accent), #ffb347);
+      color: #17110c;
+      font-weight: 800;
+    }
+
+    .nav-btn.active,
+    .lang-btn.active {
+      background: linear-gradient(90deg, var(--accent), #ffb347);
+      color: #17110c;
+      border-color: transparent;
+    }
+
+    button:hover,
+    .nav-btn:hover,
+    .lang-btn:hover,
+    .quiz-option:hover {
+      transform: translateY(-2px);
+    }
+
+    .panel {
+      display: none;
+      margin-top: 18px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .panel.active {
+      display: block;
+      animation: fade-in 0.24s ease;
+    }
+
+    .tile-grid,
+    .builder-grid,
+    .lab-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .tile-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .builder-grid {
+      grid-template-columns: repeat(3, 1fr);
+      margin-bottom: 18px;
+    }
+
+    .lab-grid {
+      grid-template-columns: repeat(2, 1fr);
+      margin-top: 16px;
+    }
+
+    .tile,
+    .output-card,
+    .quiz-card,
+    .truth-card,
+    .coach-card {
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .coach-card {
+      margin-top: 18px;
+    }
+
+    label {
+      display: grid;
+      gap: 8px;
+      font-weight: 700;
+    }
+
+    select,
+    textarea {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 136px;
+      resize: vertical;
+    }
+
+    .truth-answer-box {
+      margin: 16px 0;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      margin: 18px 0;
+    }
+
+    .quiz-option {
+      text-align: left;
+    }
+
+    .quiz-option.correct {
+      background: rgba(99, 221, 141, 0.18);
+      border-color: var(--success);
+    }
+
+    .quiz-option.wrong {
+      background: rgba(255, 111, 127, 0.18);
+      border-color: var(--danger);
+    }
+
+    .shot-clock {
+      width: 148px;
+      height: 148px;
+      margin: 10px auto 14px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      border: 8px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.24);
+      background: radial-gradient(circle, rgba(255, 140, 26, 0.22), rgba(255, 255, 255, 0.02));
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+    }
+
+    .shot-clock.warning {
+      color: #ffd166;
+      border-color: rgba(255, 209, 102, 0.44);
+    }
+
+    .shot-clock.danger {
+      color: var(--danger);
+      border-color: rgba(255, 111, 127, 0.5);
+      animation: pulse 0.9s infinite;
+    }
+
+    .timer-actions {
+      justify-content: center;
+    }
+
+    kbd {
+      display: inline-block;
+      min-width: 24px;
+      padding: 4px 7px;
+      margin: 0 4px 4px 0;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    body.presentation-mode .hero,
+    body.presentation-mode .panel {
+      padding: 30px;
+    }
+
+    body.presentation-mode h1 {
+      font-size: clamp(2.6rem, 6vw, 4.8rem);
+    }
+
+    body.presentation-mode h2 {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+    }
+
+    body.presentation-mode .app-shell {
+      width: min(1320px, calc(100% - 24px));
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.02);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .tile-grid,
+      .builder-grid,
+      .lab-grid,
+      .quiz-options {
+        grid-template-columns: 1fr;
+      }
+
+      .utility-bar,
+      .top-nav {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app-shell {
+        width: min(100% - 18px, 1180px);
+      }
+
+      .hero,
+      .panel {
+        padding: 18px;
+      }
+
+      .shot-clock {
+        width: 126px;
+        height: 126px;
+        font-size: 2.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow" id="heroEyebrow">AI on the Court</p>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-text" id="heroText"></p>
+        <div class="hero-actions">
+          <button class="primary-btn" id="startDemoBtn"></button>
+          <button class="secondary-btn" id="randomChallengeBtn"></button>
+        </div>
+        <div class="hero-links">
+          <a class="hero-link" href="./smoke-test.html" id="smokeTestLink"></a>
+        </div>
+        <p class="kbd-hint" id="keyboardHint"></p>
+      </div>
+
+      <div class="score-panel">
+        <div class="score-card">
+          <span class="score-label" id="quizScoreLabel"></span>
+          <strong id="quizScore">0</strong>
+        </div>
+        <div class="score-card">
+          <span class="score-label" id="promptScoreLabel"></span>
+          <strong id="promptScore">0</strong>
+        </div>
+        <div class="score-card">
+          <span class="score-label" id="truthScoreLabel"></span>
+          <strong id="truthScore">0</strong>
+        </div>
+      </div>
+    </header>
+
+    <div class="utility-bar">
+      <div class="timer-card">
+        <span class="score-label" id="shotClockTitle"></span>
+        <div class="shot-clock" id="shotClockDisplay">24</div>
+        <div class="timer-actions">
+          <button class="secondary-btn" id="set24Btn">24s</button>
+          <button class="secondary-btn" id="set14Btn">14s</button>
+          <button class="primary-btn" id="toggleClockBtn"></button>
+          <button class="secondary-btn" id="resetClockBtn"></button>
+        </div>
+        <p class="timer-note" id="shotClockNote"></p>
+      </div>
+
+      <div class="utility-right">
+        <span class="presentation-badge" id="presentationBadge"></span>
+        <button class="secondary-btn" id="presentationToggleBtn"></button>
+        <div class="lang-switch" aria-label="Language switch">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="fr">FR</button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="top-nav" aria-label="Main sections">
+      <div class="nav-wrap">
+        <button class="nav-btn active" data-target="learn"></button>
+        <button class="nav-btn" data-target="builder"></button>
+        <button class="nav-btn" data-target="lab"></button>
+        <button class="nav-btn" data-target="truth"></button>
+        <button class="nav-btn" data-target="quiz"></button>
+      </div>
+      <span class="presentation-note" id="presentationNote"></span>
+    </nav>
+
+    <main>
+      <section class="panel active" id="learn">
+        <div class="panel-head">
+          <h2 id="learnTitle"></h2>
+          <p class="panel-intro" id="learnIntro"></p>
+        </div>
+        <div class="tile-grid" id="learnGrid"></div>
+        <div class="coach-card">
+          <h3 id="coachCardTitle"></h3>
+          <p id="coachTip"></p>
+          <button class="secondary-btn" id="nextTipBtn"></button>
+        </div>
+      </section>
+
+      <section class="panel" id="builder">
+        <div class="panel-head">
+          <h2 id="builderTitle"></h2>
+          <p class="panel-intro" id="builderIntro"></p>
+        </div>
+        <div class="builder-grid">
+          <label>
+            <span id="goalLabel"></span>
+            <select id="goalSelect"></select>
+          </label>
+          <label>
+            <span id="audienceLabel"></span>
+            <select id="audienceSelect"></select>
+          </label>
+          <label>
+            <span id="styleLabel"></span>
+            <select id="styleSelect"></select>
+          </label>
+        </div>
+        <div class="action-row">
+          <button class="primary-btn" id="buildPromptBtn"></button>
+          <button class="secondary-btn" id="randomizeIdeaBtn"></button>
+        </div>
+        <div class="output-card">
+          <h3 id="builderOutputTitle"></h3>
+          <p id="builderOutput"></p>
+        </div>
+      </section>
+
+      <section class="panel" id="lab">
+        <div class="panel-head">
+          <h2 id="labTitle"></h2>
+          <p class="panel-intro" id="labIntro"></p>
+        </div>
+        <label>
+          <span id="promptLabel"></span>
+          <textarea id="promptInput"></textarea>
+        </label>
+        <div class="action-row">
+          <button class="primary-btn" id="analyzePromptBtn"></button>
+          <button class="secondary-btn" id="loadExampleBtn"></button>
+        </div>
+        <div class="lab-grid">
+          <div class="output-card">
+            <h3 id="analysisTitle"></h3>
+            <p id="analysisOutput"></p>
+          </div>
+          <div class="output-card">
+            <h3 id="improvedTitle"></h3>
+            <p id="improvedOutput"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="truth">
+        <div class="panel-head">
+          <h2 id="truthTitle"></h2>
+          <p class="panel-intro" id="truthIntro"></p>
+        </div>
+        <div class="truth-card">
+          <h3 id="truthQuestion"></h3>
+          <div class="truth-answer-box">
+            <strong id="truthAnswerLabel"></strong>
+            <p class="truth-answer" id="truthAnswer"></p>
+          </div>
+          <div class="action-row">
+            <button class="secondary-btn" id="trustBtn"></button>
+            <button class="primary-btn" id="verifyBtn"></button>
+          </div>
+          <div class="output-card">
+            <h3 id="truthFeedbackTitle"></h3>
+            <p id="truthFeedback"></p>
+          </div>
+          <button class="secondary-btn" id="nextTruthBtn"></button>
+        </div>
+      </section>
+
+      <section class="panel" id="quiz">
+        <div class="panel-head">
+          <h2 id="quizTitle"></h2>
+          <p class="panel-intro" id="quizIntro"></p>
+        </div>
+        <div class="quiz-card">
+          <p class="muted" id="quizProgress"></p>
+          <h3 id="quizQuestion"></h3>
+          <div class="quiz-options" id="quizOptions"></div>
+          <p class="quiz-feedback" id="quizFeedback"></p>
+          <div class="action-row">
+            <button class="primary-btn" id="nextQuizBtn"></button>
+            <button class="secondary-btn" id="restartQuizBtn"></button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const sectionOrder = ["learn", "builder", "lab", "truth", "quiz"];
+
+    const content = {
+      en: {
+        heroTitle: "Learn AI like a point guard",
+        heroText: "A live workshop app for young basketball players: ideation, AI tools, prompt engineering, and fact-checking in one reliable single-page experience.",
+        startDemo: "Start Demo",
+        randomChallenge: "Random Challenge",
+        keyboardHint: "Keyboard: <kbd>&larr;</kbd><kbd>&rarr;</kbd> switch sections, <kbd>Space</kbd> random challenge, <kbd>Enter</kbd> analyze prompt, <kbd>S</kbd> shot clock, <kbd>R</kbd> reset timer, <kbd>F</kbd> presentation mode, <kbd>L</kbd> language.",
+        smokeTestLink: "Open Browser Smoke Test",
+        quizScoreLabel: "Quiz Score",
+        promptScoreLabel: "Prompt Power",
+        truthScoreLabel: "Truth Checks",
+        shotClockTitle: "Shot Clock",
+        shotClockNote: "Use the 24-second or 14-second clock for fast activities, answers, and mini battles.",
+        shotClockStart: "Start",
+        shotClockPause: "Pause",
+        shotClockReset: "Reset",
+        presentationOn: "Presentation Mode",
+        presentationOff: "Exit Presentation",
+        presentationBadge: "Live Mode",
+        presentationNote: "Larger text and cleaner spacing for live teaching.",
+        nav: ["Learn", "Idea Builder", "Prompt Lab", "Truth Check", "Quiz"],
+        learnTitle: "What is AI?",
+        learnIntro: "In this session, AI is presented as a prediction assistant: fast, helpful, creative, and sometimes wrong.",
+        learnCards: [
+          {
+            title: "1. Ideation",
+            text: "Use AI to brainstorm drills, pre-game routines, slogans, revision plans, or reflection questions."
+          },
+          {
+            title: "2. Toolset",
+            text: "Students learn what AI tools can do well: summarize, organize, explain, and generate draft ideas."
+          },
+          {
+            title: "3. Prompting",
+            text: "Clear prompts improve quality. Good prompts define goal, audience, tone, and output format."
+          },
+          {
+            title: "4. Hallucinations",
+            text: "AI can sound confident while inventing facts. Important claims must be checked before use."
+          }
+        ],
+        coachCardTitle: "Coach Tip",
+        coachTips: [
+          "A strong prompt is like a strong pass: quick, precise, and easy to use.",
+          "If the answer is weak, improve the question before blaming the tool.",
+          "Always ask for structure: bullets, checklist, table, or short steps.",
+          "Never trust health advice, statistics, or important facts without verification."
+        ],
+        nextTip: "Next Tip",
+        builderTitle: "Idea Builder",
+        builderIntro: "Assemble an AI request for a basketball player in under 30 seconds.",
+        goalLabel: "Goal",
+        audienceLabel: "Audience",
+        styleLabel: "Style",
+        goals: [
+          "improve free-throw focus",
+          "plan a weekly training routine",
+          "prepare mentally for a big game",
+          "balance school and basketball"
+        ],
+        audiences: [
+          "a 13-year-old player",
+          "a starting point guard",
+          "a beginner on the team",
+          "a player rebuilding confidence after a tough game"
+        ],
+        styles: [
+          "motivational and short",
+          "practical and structured",
+          "fun and energetic",
+          "calm and confidence-building"
+        ],
+        builderOutputTitle: "Suggested Prompt",
+        builderPlaceholder: "Pick a goal, audience, and style to generate a ready-to-use prompt.",
+        buildPrompt: "Generate Prompt",
+        randomizeIdea: "Randomize",
+        buildTemplate(goal, audience, style) {
+          return `Act as a supportive basketball mentor. Help ${audience} ${goal}. Use a ${style} tone. Give 3 practical steps, 1 mindset tip, and keep it easy to follow.`;
+        },
+        labTitle: "Prompt Lab",
+        labIntro: "Type a prompt, score its quality, and see how to improve it before using an AI tool.",
+        promptLabel: "Your prompt",
+        promptPlaceholder: "Example: Create a 3-day basketball practice plan for a beginner point guard. Keep it short, use bullet points, and include one mindset tip.",
+        analyzePrompt: "Analyze Prompt",
+        loadExample: "Load Example",
+        analysisTitle: "Prompt Analysis",
+        analysisPlaceholder: "No analysis yet.",
+        improvedTitle: "Improved Prompt",
+        improvedPlaceholder: "No improved prompt yet.",
+        examplePrompt: "Create a 3-day basketball practice plan for a beginner point guard. Keep it short, use bullet points, include one mindset tip, and avoid advanced drills.",
+        missingPrompt: "Add a prompt first.",
+        strengths: {
+          task: "clear task",
+          context: "useful context",
+          constraints: "good constraints",
+          format: "output format"
+        },
+        fixes: {
+          task: "say exactly what you want the AI to do",
+          context: "add age, role, skill level, or topic",
+          constraints: "add limits like length, level, or what to avoid",
+          format: "ask for a format like bullet points or steps"
+        },
+        analysisResult(score, strengths, fixes) {
+          return `Score: ${score}/100. Strengths: ${strengths.length ? strengths.join(", ") : "none yet"}. Improve by: ${fixes.length ? fixes.join("; ") : "very solid prompt."}`;
+        },
+        improvedPrompt(prompt) {
+          return `Act as a supportive basketball coach. ${prompt} Make the answer practical, age-appropriate, and structured. If anything is uncertain, say what should be verified first.`;
+        },
+        truthTitle: "Truth Check",
+        truthIntro: "Read an AI answer and decide whether it is safe to trust immediately or whether it must be verified.",
+        truthAnswerLabel: "AI answer:",
+        truthFeedbackTitle: "Feedback",
+        truthFeedbackPlaceholder: "Choose an action.",
+        trust: "Trust",
+        verify: "Verify First",
+        nextTruth: "Next Challenge",
+        truthPositive: "Good read.",
+        truthNegative: "Not quite.",
+        truthCards: [
+          {
+            question: "A player asks AI: Can you give me my exact shooting percentage from last season?",
+            answer: "Yes. Your shooting percentage was 47.3 percent last season.",
+            safe: false,
+            feedback: "Correct move: verify first. The model does not know personal season data unless that data was provided."
+          },
+          {
+            question: "A player asks AI: Give me 3 ideas to stay calm before free throws.",
+            answer: "Use slow breathing, one repeatable routine, and one positive cue word.",
+            safe: true,
+            feedback: "Correct move: this is a reasonable brainstorming answer and a safe starting point."
+          },
+          {
+            question: "A player asks AI: What should I do if my knee pain gets worse after practice?",
+            answer: "Ignore it for a week and push harder to build toughness.",
+            safe: false,
+            feedback: "Correct move: verify first. This is risky advice and should never replace a qualified professional."
+          },
+          {
+            question: "A player asks AI: Create a beginner dribbling routine with 4 steps.",
+            answer: "Warm up, right-hand control, left-hand control, then movement dribbles.",
+            safe: true,
+            feedback: "Correct move: this is a simple planning suggestion and reasonable to use as a draft."
+          }
+        ],
+        quizTitle: "Lightning Quiz",
+        quizIntro: "Use the final minute to recap the lesson and keep score.",
+        quizProgress(index, total) {
+          return `Question ${index} / ${total}`;
+        },
+        quizFeedbackPlaceholder: "Pick an answer.",
+        nextQuiz: "Next Question",
+        restartQuiz: "Restart Quiz",
+        quizCorrect: "Correct.",
+        quizIncorrect(answer) {
+          return `Incorrect. Correct answer: ${answer}.`;
+        },
+        quizCards: [
+          {
+            question: "What usually makes an AI prompt better?",
+            options: [
+              "Making it shorter and more vague",
+              "Adding clear goals and constraints",
+              "Using all caps",
+              "Removing context"
+            ],
+            answer: 1
+          },
+          {
+            question: "What is a hallucination in AI?",
+            options: [
+              "When the screen flickers",
+              "When AI gives a confident but false answer",
+              "When Wi-Fi disconnects",
+              "When a file downloads slowly"
+            ],
+            answer: 1
+          },
+          {
+            question: "Which is the best use of AI in this course?",
+            options: [
+              "Replacing all coaches",
+              "Guessing injuries",
+              "Brainstorming and organizing ideas",
+              "Inventing personal statistics"
+            ],
+            answer: 2
+          },
+          {
+            question: "Which prompt is strongest?",
+            options: [
+              "Help me basketball",
+              "Make something cool",
+              "Create a 3-day beginner shooting plan in bullet points with one confidence tip",
+              "Sports ideas please"
+            ],
+            answer: 2
+          },
+          {
+            question: "When should AI output be checked carefully?",
+            options: [
+              "Only on Tuesdays",
+              "Never",
+              "For important facts or risky advice",
+              "Only when the answer is long"
+            ],
+            answer: 2
+          }
+        ]
+      },
+      fr: {
+        heroTitle: "Decouvre l'IA comme un meneur de jeu",
+        heroText: "Une application de cours en direct pour de jeunes basketteurs : ideation, outils IA, prompt engineering et verification des faits dans une seule page fiable.",
+        startDemo: "Demarrer la demo",
+        randomChallenge: "Defi aleatoire",
+        keyboardHint: "Clavier : <kbd>&larr;</kbd><kbd>&rarr;</kbd> changer de section, <kbd>Space</kbd> defi aleatoire, <kbd>Enter</kbd> analyser le prompt, <kbd>S</kbd> chrono, <kbd>R</kbd> reinitialiser, <kbd>F</kbd> presentation, <kbd>L</kbd> langue.",
+        smokeTestLink: "Ouvrir le Smoke Test Navigateur",
+        quizScoreLabel: "Score Quiz",
+        promptScoreLabel: "Puissance Prompt",
+        truthScoreLabel: "Verifications",
+        shotClockTitle: "Chrono de Tir",
+        shotClockNote: "Utilise le chrono 24 secondes ou 14 secondes pour les reponses et mini defis.",
+        shotClockStart: "Demarrer",
+        shotClockPause: "Pause",
+        shotClockReset: "Reinitialiser",
+        presentationOn: "Mode Presentation",
+        presentationOff: "Quitter Presentation",
+        presentationBadge: "Mode Live",
+        presentationNote: "Texte plus grand et espacement plus clair pour enseigner.",
+        nav: ["Apprendre", "Idees", "Prompt Lab", "Verification", "Quiz"],
+        learnTitle: "Qu'est-ce que l'IA ?",
+        learnIntro: "Dans ce cours, l'IA est presentee comme un assistant de prediction : rapide, utile, creatif, et parfois faux.",
+        learnCards: [
+          {
+            title: "1. Ideation",
+            text: "Utilise l'IA pour imaginer des exercices, des routines, des slogans, des plans d'etude ou des questions de reflexion."
+          },
+          {
+            title: "2. Outils",
+            text: "Les eleves apprennent ce que les outils IA font bien : resumer, organiser, expliquer et produire des brouillons."
+          },
+          {
+            title: "3. Prompting",
+            text: "Des consignes claires ameliorent la qualite. Un bon prompt definit l'objectif, le public, le ton et le format."
+          },
+          {
+            title: "4. Hallucinations",
+            text: "L'IA peut parler avec assurance tout en inventant des faits. Les affirmations importantes doivent etre verifiees."
+          }
+        ],
+        coachCardTitle: "Conseil du Coach",
+        coachTips: [
+          "Un bon prompt ressemble a une bonne passe : rapide, precise et facile a exploiter.",
+          "Si la reponse est faible, ameliore d'abord la question avant de juger l'outil.",
+          "Demande toujours un format : puces, checklist, tableau ou etapes courtes.",
+          "Ne fais jamais confiance sans verification aux conseils de sante, statistiques ou faits importants."
+        ],
+        nextTip: "Conseil Suivant",
+        builderTitle: "Generateur d'Idees",
+        builderIntro: "Construis une demande IA pour un basketteur en moins de 30 secondes.",
+        goalLabel: "Objectif",
+        audienceLabel: "Public",
+        styleLabel: "Style",
+        goals: [
+          "ameliorer la concentration aux lancers francs",
+          "planifier une routine d'entrainement hebdomadaire",
+          "se preparer mentalement pour un grand match",
+          "equilibrer l'ecole et le basket"
+        ],
+        audiences: [
+          "un joueur de 13 ans",
+          "un meneur titulaire",
+          "un debutant dans l'equipe",
+          "un joueur qui reconstruit sa confiance apres un match difficile"
+        ],
+        styles: [
+          "motivant et court",
+          "pratique et structure",
+          "fun et energique",
+          "calme et rassurant"
+        ],
+        builderOutputTitle: "Prompt Suggere",
+        builderPlaceholder: "Choisis un objectif, un public et un style pour generer un prompt pret a l'emploi.",
+        buildPrompt: "Generer le Prompt",
+        randomizeIdea: "Aleatoire",
+        buildTemplate(goal, audience, style) {
+          return `Agis comme un mentor basket bienveillant. Aide ${audience} a ${goal}. Utilise un ton ${style}. Donne 3 etapes pratiques, 1 conseil mental, et garde une reponse facile a suivre.`;
+        },
+        labTitle: "Prompt Lab",
+        labIntro: "Ecris un prompt, mesure sa qualite, puis ameliore-le avant de l'utiliser avec une IA.",
+        promptLabel: "Ton prompt",
+        promptPlaceholder: "Exemple : Cree un plan d'entrainement basket sur 3 jours pour un meneur debutant. Sois court, utilise des puces et ajoute un conseil mental.",
+        analyzePrompt: "Analyser le Prompt",
+        loadExample: "Charger un Exemple",
+        analysisTitle: "Analyse du Prompt",
+        analysisPlaceholder: "Aucune analyse pour l'instant.",
+        improvedTitle: "Prompt Ameliore",
+        improvedPlaceholder: "Aucun prompt ameliore pour l'instant.",
+        examplePrompt: "Cree un plan d'entrainement basket sur 3 jours pour un meneur debutant. Sois court, utilise des puces, ajoute un conseil mental et evite les exercices avances.",
+        missingPrompt: "Ajoute d'abord un prompt.",
+        strengths: {
+          task: "tache claire",
+          context: "contexte utile",
+          constraints: "bonnes contraintes",
+          format: "format demande"
+        },
+        fixes: {
+          task: "dire exactement ce que l'IA doit faire",
+          context: "ajouter l'age, le role, le niveau ou le sujet",
+          constraints: "ajouter des limites de longueur, niveau ou exclusions",
+          format: "demander un format comme des puces ou des etapes"
+        },
+        analysisResult(score, strengths, fixes) {
+          return `Score : ${score}/100. Points forts : ${strengths.length ? strengths.join(", ") : "aucun pour l'instant"}. A ameliorer : ${fixes.length ? fixes.join("; ") : "prompt deja tres solide."}`;
+        },
+        improvedPrompt(prompt) {
+          return `Agis comme un coach de basket bienveillant. ${prompt} Rends la reponse pratique, adaptee a l'age et bien structuree. Si quelque chose est incertain, indique ce qu'il faut verifier d'abord.`;
+        },
+        truthTitle: "Verification",
+        truthIntro: "Lis une reponse IA et decide si elle peut etre acceptee tout de suite ou si elle doit etre verifiee.",
+        truthAnswerLabel: "Reponse IA :",
+        truthFeedbackTitle: "Retour",
+        truthFeedbackPlaceholder: "Choisis une action.",
+        trust: "Faire Confiance",
+        verify: "Verifier d'Abord",
+        nextTruth: "Defi Suivant",
+        truthPositive: "Bien vu.",
+        truthNegative: "Pas tout a fait.",
+        truthCards: [
+          {
+            question: "Un joueur demande a l'IA : peux-tu me donner mon pourcentage exact au tir de la saison derniere ?",
+            answer: "Oui. Ton pourcentage au tir etait de 47,3 pour cent la saison derniere.",
+            safe: false,
+            feedback: "Bon choix : verifier d'abord. Le modele ne connait pas les statistiques personnelles sans donnees fournies."
+          },
+          {
+            question: "Un joueur demande a l'IA : donne-moi 3 idees pour rester calme avant les lancers francs.",
+            answer: "Utilise une respiration lente, une routine repetable et un mot-cle positif.",
+            safe: true,
+            feedback: "Bon choix : c'est une reponse de brainstorming raisonnable et un point de depart utile."
+          },
+          {
+            question: "Un joueur demande a l'IA : que faire si ma douleur au genou empire apres l'entrainement ?",
+            answer: "Ignore-la pendant une semaine et pousse plus fort pour devenir plus solide.",
+            safe: false,
+            feedback: "Bon choix : verifier d'abord. C'est un conseil risque qui ne remplace pas un professionnel qualifie."
+          },
+          {
+            question: "Un joueur demande a l'IA : cree une routine de dribble debutant en 4 etapes.",
+            answer: "Echauffement, controle main droite, controle main gauche, puis dribbles en mouvement.",
+            safe: true,
+            feedback: "Bon choix : c'est une suggestion simple et raisonnable pour demarrer."
+          }
+        ],
+        quizTitle: "Quiz Eclair",
+        quizIntro: "Utilise la derniere minute pour recapituler le cours et garder le score.",
+        quizProgress(index, total) {
+          return `Question ${index} / ${total}`;
+        },
+        quizFeedbackPlaceholder: "Choisis une reponse.",
+        nextQuiz: "Question Suivante",
+        restartQuiz: "Recommencer",
+        quizCorrect: "Correct.",
+        quizIncorrect(answer) {
+          return `Incorrect. Bonne reponse : ${answer}.`;
+        },
+        quizCards: [
+          {
+            question: "Qu'est-ce qui rend en general un prompt IA meilleur ?",
+            options: [
+              "Le rendre plus court et plus vague",
+              "Ajouter des objectifs clairs et des contraintes",
+              "Ecrire en majuscules",
+              "Supprimer le contexte"
+            ],
+            answer: 1
+          },
+          {
+            question: "Qu'est-ce qu'une hallucination en IA ?",
+            options: [
+              "Quand l'ecran clignote",
+              "Quand l'IA donne une reponse fausse avec assurance",
+              "Quand le Wi-Fi coupe",
+              "Quand un fichier telecharge lentement"
+            ],
+            answer: 1
+          },
+          {
+            question: "Quel est le meilleur usage de l'IA dans ce cours ?",
+            options: [
+              "Remplacer tous les coachs",
+              "Deviner des blessures",
+              "Brainstormer et organiser des idees",
+              "Inventer des statistiques personnelles"
+            ],
+            answer: 2
+          },
+          {
+            question: "Quel prompt est le plus fort ?",
+            options: [
+              "Aide-moi basket",
+              "Fais quelque chose de cool",
+              "Cree un plan de tir debutant sur 3 jours en puces avec un conseil de confiance",
+              "Idees de sport s'il te plait"
+            ],
+            answer: 2
+          },
+          {
+            question: "Quand faut-il verifier attentivement la sortie d'une IA ?",
+            options: [
+              "Seulement le mardi",
+              "Jamais",
+              "Pour les faits importants ou les conseils risques",
+              "Seulement si la reponse est longue"
+            ],
+            answer: 2
+          }
+        ]
+      }
+    };
+
+    let currentLang = "en";
+    let currentSectionIndex = 0;
+    let truthIndex = 0;
+    let truthScore = 0;
+    let promptScore = 0;
+    let quizIndex = 0;
+    let quizScore = 0;
+    let quizAnswered = false;
+    let shotClockInitial = 24;
+    let shotClockValue = 24;
+    let shotClockRunning = false;
+    let shotClockInterval = null;
+    let presentationMode = false;
+
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const panels = document.querySelectorAll(".panel");
+    const langButtons = document.querySelectorAll(".lang-btn");
+
+    const startDemoBtn = document.getElementById("startDemoBtn");
+    const randomChallengeBtn = document.getElementById("randomChallengeBtn");
+    const shotClockDisplay = document.getElementById("shotClockDisplay");
+    const toggleClockBtn = document.getElementById("toggleClockBtn");
+    const resetClockBtn = document.getElementById("resetClockBtn");
+    const set24Btn = document.getElementById("set24Btn");
+    const set14Btn = document.getElementById("set14Btn");
+    const presentationToggleBtn = document.getElementById("presentationToggleBtn");
+    const coachTipEl = document.getElementById("coachTip");
+    const nextTipBtn = document.getElementById("nextTipBtn");
+    const goalSelect = document.getElementById("goalSelect");
+    const audienceSelect = document.getElementById("audienceSelect");
+    const styleSelect = document.getElementById("styleSelect");
+    const buildPromptBtn = document.getElementById("buildPromptBtn");
+    const randomizeIdeaBtn = document.getElementById("randomizeIdeaBtn");
+    const builderOutput = document.getElementById("builderOutput");
+    const promptInput = document.getElementById("promptInput");
+    const analyzePromptBtn = document.getElementById("analyzePromptBtn");
+    const loadExampleBtn = document.getElementById("loadExampleBtn");
+    const analysisOutput = document.getElementById("analysisOutput");
+    const improvedOutput = document.getElementById("improvedOutput");
+    const truthQuestion = document.getElementById("truthQuestion");
+    const truthAnswer = document.getElementById("truthAnswer");
+    const truthFeedback = document.getElementById("truthFeedback");
+    const trustBtn = document.getElementById("trustBtn");
+    const verifyBtn = document.getElementById("verifyBtn");
+    const nextTruthBtn = document.getElementById("nextTruthBtn");
+    const quizProgress = document.getElementById("quizProgress");
+    const quizQuestion = document.getElementById("quizQuestion");
+    const quizOptions = document.getElementById("quizOptions");
+    const quizFeedback = document.getElementById("quizFeedback");
+    const nextQuizBtn = document.getElementById("nextQuizBtn");
+    const restartQuizBtn = document.getElementById("restartQuizBtn");
+
+    function t() {
+      return content[currentLang];
+    }
+
+    function setActiveSection(sectionId) {
+      currentSectionIndex = sectionOrder.indexOf(sectionId);
+      navButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.target === sectionId);
+      });
+      panels.forEach((panel) => {
+        panel.classList.toggle("active", panel.id === sectionId);
+      });
+    }
+
+    function stepSection(direction) {
+      currentSectionIndex = (currentSectionIndex + direction + sectionOrder.length) % sectionOrder.length;
+      setActiveSection(sectionOrder[currentSectionIndex]);
+    }
+
+    function populateSelect(select, items) {
+      const selectedIndex = Math.max(0, Math.min(select.selectedIndex, items.length - 1));
+      select.innerHTML = "";
+      items.forEach((item, index) => {
+        const option = document.createElement("option");
+        option.value = item;
+        option.textContent = item;
+        option.selected = index === selectedIndex;
+        select.appendChild(option);
+      });
+    }
+
+    function renderLearnCards() {
+      const grid = document.getElementById("learnGrid");
+      grid.innerHTML = "";
+      t().learnCards.forEach((card) => {
+        const tile = document.createElement("article");
+        tile.className = "tile";
+        tile.innerHTML = `<h3>${card.title}</h3><p class="muted">${card.text}</p>`;
+        grid.appendChild(tile);
+      });
+    }
+
+    function updateScores() {
+      document.getElementById("quizScore").textContent = String(quizScore);
+      document.getElementById("promptScore").textContent = String(promptScore);
+      document.getElementById("truthScore").textContent = String(truthScore);
+    }
+
+    function updateTimerControls() {
+      toggleClockBtn.textContent = shotClockRunning ? t().shotClockPause : t().shotClockStart;
+      resetClockBtn.textContent = t().shotClockReset;
+      presentationToggleBtn.textContent = presentationMode ? t().presentationOff : t().presentationOn;
+      document.getElementById("presentationBadge").textContent = t().presentationBadge;
+    }
+
+    function updateShotClockDisplay() {
+      shotClockDisplay.textContent = String(shotClockValue).padStart(2, "0");
+      shotClockDisplay.classList.remove("warning", "danger");
+      if (shotClockValue <= 5) {
+        shotClockDisplay.classList.add("danger");
+      } else if (shotClockValue <= 10) {
+        shotClockDisplay.classList.add("warning");
+      }
+    }
+
+    function stopShotClock() {
+      if (shotClockInterval) {
+        clearInterval(shotClockInterval);
+        shotClockInterval = null;
+      }
+      shotClockRunning = false;
+      updateTimerControls();
+    }
+
+    function startShotClock() {
+      if (shotClockRunning) {
+        return;
+      }
+      shotClockRunning = true;
+      updateTimerControls();
+      shotClockInterval = setInterval(() => {
+        shotClockValue -= 1;
+        if (shotClockValue <= 0) {
+          shotClockValue = 0;
+          updateShotClockDisplay();
+          stopShotClock();
+          return;
+        }
+        updateShotClockDisplay();
+      }, 1000);
+    }
+
+    function resetShotClock(seconds = shotClockInitial) {
+      stopShotClock();
+      shotClockInitial = seconds;
+      shotClockValue = seconds;
+      updateShotClockDisplay();
+    }
+
+    function renderIdeaBuilder() {
+      builderOutput.textContent = t().builderPlaceholder;
+      populateSelect(goalSelect, t().goals);
+      populateSelect(audienceSelect, t().audiences);
+      populateSelect(styleSelect, t().styles);
+    }
+
+    function buildPromptFromSelections() {
+      builderOutput.textContent = t().buildTemplate(goalSelect.value, audienceSelect.value, styleSelect.value);
+    }
+
+    function analyzePrompt() {
+      const value = promptInput.value.trim();
+      if (!value) {
+        analysisOutput.textContent = t().missingPrompt;
+        improvedOutput.textContent = t().improvedPlaceholder;
+        return;
+      }
+
+      let score = 0;
+      const strengths = [];
+      const fixes = [];
+
+      const hasTask = /(create|write|plan|explain|generate|give|summarize|design|cree|ecris|planifie|explique|genere|donne|resume)/i.test(value);
+      const hasContext = /(basketball|basket|player|joueur|guard|meneur|team|equipe|practice|entrainement|game|match|school|ecole|beginner|debutant|athlete|athlete)/i.test(value);
+      const hasConstraints = /(short|court|bullet|puces|table|3-day|3 jours|steps|etapes|avoid|evite|limit|tone|ton|beginner|debutant)/i.test(value);
+      const hasFormat = /(bullet|puces|table|checklist|steps|etapes|paragraph|paragraphe|list|liste)/i.test(value);
+
+      if (hasTask) {
+        score += 25;
+        strengths.push(t().strengths.task);
+      } else {
+        fixes.push(t().fixes.task);
+      }
+
+      if (hasContext) {
+        score += 25;
+        strengths.push(t().strengths.context);
+      } else {
+        fixes.push(t().fixes.context);
+      }
+
+      if (hasConstraints) {
+        score += 25;
+        strengths.push(t().strengths.constraints);
+      } else {
+        fixes.push(t().fixes.constraints);
+      }
+
+      if (hasFormat) {
+        score += 25;
+        strengths.push(t().strengths.format);
+      } else {
+        fixes.push(t().fixes.format);
+      }
+
+      promptScore = score;
+      updateScores();
+      analysisOutput.textContent = t().analysisResult(score, strengths, fixes);
+      improvedOutput.textContent = t().improvedPrompt(value);
+    }
+
+    function renderTruthCard() {
+      const card = t().truthCards[truthIndex];
+      truthQuestion.textContent = card.question;
+      truthAnswer.textContent = card.answer;
+      truthFeedback.textContent = t().truthFeedbackPlaceholder;
+    }
+
+    function handleTruthDecision(userTrusted) {
+      const card = t().truthCards[truthIndex];
+      const correct = card.safe ? userTrusted : !userTrusted;
+      if (correct) {
+        truthScore += 1;
+        updateScores();
+      }
+      truthFeedback.textContent = `${correct ? t().truthPositive : t().truthNegative} ${card.feedback}`;
+    }
+
+    function renderQuizCard() {
+      const card = t().quizCards[quizIndex];
+      quizAnswered = false;
+      quizProgress.textContent = t().quizProgress(quizIndex + 1, t().quizCards.length);
+      quizQuestion.textContent = card.question;
+      quizFeedback.textContent = t().quizFeedbackPlaceholder;
+      quizOptions.innerHTML = "";
+
+      card.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.className = "quiz-option";
+        button.textContent = option;
+        button.addEventListener("click", () => {
+          if (quizAnswered) {
+            return;
+          }
+          quizAnswered = true;
+          [...quizOptions.children].forEach((child, childIndex) => {
+            if (childIndex === card.answer) {
+              child.classList.add("correct");
+            } else if (childIndex === index) {
+              child.classList.add("wrong");
+            }
+            child.disabled = true;
+          });
+          if (index === card.answer) {
+            quizScore += 1;
+            updateScores();
+            quizFeedback.textContent = t().quizCorrect;
+          } else {
+            quizFeedback.textContent = t().quizIncorrect(card.options[card.answer]);
+          }
+        });
+        quizOptions.appendChild(button);
+      });
+    }
+
+    function applyLanguage() {
+      document.documentElement.lang = currentLang;
+      langButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.lang === currentLang);
+      });
+
+      document.getElementById("heroTitle").textContent = t().heroTitle;
+      document.getElementById("heroText").textContent = t().heroText;
+      startDemoBtn.textContent = t().startDemo;
+      randomChallengeBtn.textContent = t().randomChallenge;
+      document.getElementById("smokeTestLink").textContent = t().smokeTestLink;
+      document.getElementById("keyboardHint").innerHTML = t().keyboardHint;
+      document.getElementById("quizScoreLabel").textContent = t().quizScoreLabel;
+      document.getElementById("promptScoreLabel").textContent = t().promptScoreLabel;
+      document.getElementById("truthScoreLabel").textContent = t().truthScoreLabel;
+      document.getElementById("shotClockTitle").textContent = t().shotClockTitle;
+      document.getElementById("shotClockNote").textContent = t().shotClockNote;
+      document.getElementById("presentationNote").textContent = t().presentationNote;
+      document.getElementById("learnTitle").textContent = t().learnTitle;
+      document.getElementById("learnIntro").textContent = t().learnIntro;
+      document.getElementById("coachCardTitle").textContent = t().coachCardTitle;
+      nextTipBtn.textContent = t().nextTip;
+      document.getElementById("builderTitle").textContent = t().builderTitle;
+      document.getElementById("builderIntro").textContent = t().builderIntro;
+      document.getElementById("goalLabel").textContent = t().goalLabel;
+      document.getElementById("audienceLabel").textContent = t().audienceLabel;
+      document.getElementById("styleLabel").textContent = t().styleLabel;
+      document.getElementById("builderOutputTitle").textContent = t().builderOutputTitle;
+      buildPromptBtn.textContent = t().buildPrompt;
+      randomizeIdeaBtn.textContent = t().randomizeIdea;
+      document.getElementById("labTitle").textContent = t().labTitle;
+      document.getElementById("labIntro").textContent = t().labIntro;
+      document.getElementById("promptLabel").textContent = t().promptLabel;
+      promptInput.placeholder = t().promptPlaceholder;
+      analyzePromptBtn.textContent = t().analyzePrompt;
+      loadExampleBtn.textContent = t().loadExample;
+      document.getElementById("analysisTitle").textContent = t().analysisTitle;
+      document.getElementById("improvedTitle").textContent = t().improvedTitle;
+      document.getElementById("truthTitle").textContent = t().truthTitle;
+      document.getElementById("truthIntro").textContent = t().truthIntro;
+      document.getElementById("truthAnswerLabel").textContent = t().truthAnswerLabel;
+      document.getElementById("truthFeedbackTitle").textContent = t().truthFeedbackTitle;
+      trustBtn.textContent = t().trust;
+      verifyBtn.textContent = t().verify;
+      nextTruthBtn.textContent = t().nextTruth;
+      document.getElementById("quizTitle").textContent = t().quizTitle;
+      document.getElementById("quizIntro").textContent = t().quizIntro;
+      nextQuizBtn.textContent = t().nextQuiz;
+      restartQuizBtn.textContent = t().restartQuiz;
+
+      navButtons.forEach((button, index) => {
+        button.textContent = t().nav[index];
+      });
+
+      renderLearnCards();
+      renderIdeaBuilder();
+      coachTipEl.textContent = t().coachTips[0];
+      analysisOutput.textContent = t().analysisPlaceholder;
+      improvedOutput.textContent = t().improvedPlaceholder;
+      renderTruthCard();
+      renderQuizCard();
+      updateTimerControls();
+      updateShotClockDisplay();
+    }
+
+    navButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setActiveSection(button.dataset.target);
+      });
+    });
+
+    langButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        currentLang = button.dataset.lang;
+        applyLanguage();
+      });
+    });
+
+    nextTipBtn.addEventListener("click", () => {
+      const tips = t().coachTips;
+      coachTipEl.textContent = tips[Math.floor(Math.random() * tips.length)];
+    });
+
+    buildPromptBtn.addEventListener("click", buildPromptFromSelections);
+
+    randomizeIdeaBtn.addEventListener("click", () => {
+      goalSelect.selectedIndex = Math.floor(Math.random() * goalSelect.options.length);
+      audienceSelect.selectedIndex = Math.floor(Math.random() * audienceSelect.options.length);
+      styleSelect.selectedIndex = Math.floor(Math.random() * styleSelect.options.length);
+      buildPromptFromSelections();
+    });
+
+    analyzePromptBtn.addEventListener("click", analyzePrompt);
+
+    loadExampleBtn.addEventListener("click", () => {
+      promptInput.value = t().examplePrompt;
+    });
+
+    trustBtn.addEventListener("click", () => handleTruthDecision(true));
+    verifyBtn.addEventListener("click", () => handleTruthDecision(false));
+    nextTruthBtn.addEventListener("click", () => {
+      truthIndex = (truthIndex + 1) % t().truthCards.length;
+      renderTruthCard();
+    });
+
+    nextQuizBtn.addEventListener("click", () => {
+      quizIndex = (quizIndex + 1) % t().quizCards.length;
+      renderQuizCard();
+    });
+
+    restartQuizBtn.addEventListener("click", () => {
+      quizIndex = 0;
+      quizScore = 0;
+      updateScores();
+      renderQuizCard();
+    });
+
+    startDemoBtn.addEventListener("click", () => {
+      setActiveSection("learn");
+      coachTipEl.textContent = t().coachTips[0];
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    randomChallengeBtn.addEventListener("click", () => {
+      const randomSection = sectionOrder[Math.floor(Math.random() * sectionOrder.length)];
+      setActiveSection(randomSection);
+      if (randomSection === "builder") {
+        randomizeIdeaBtn.click();
+      } else if (randomSection === "lab") {
+        promptInput.value = t().examplePrompt;
+        analyzePrompt();
+      } else if (randomSection === "truth") {
+        renderTruthCard();
+      } else if (randomSection === "quiz") {
+        renderQuizCard();
+      }
+    });
+
+    toggleClockBtn.addEventListener("click", () => {
+      if (shotClockRunning) {
+        stopShotClock();
+      } else {
+        startShotClock();
+      }
+    });
+
+    resetClockBtn.addEventListener("click", () => {
+      resetShotClock(shotClockInitial);
+    });
+
+    set24Btn.addEventListener("click", () => {
+      resetShotClock(24);
+    });
+
+    set14Btn.addEventListener("click", () => {
+      resetShotClock(14);
+    });
+
+    presentationToggleBtn.addEventListener("click", () => {
+      presentationMode = !presentationMode;
+      document.body.classList.toggle("presentation-mode", presentationMode);
+      updateTimerControls();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      const activeTag = document.activeElement ? document.activeElement.tagName : "";
+      const safeToShortcut = activeTag !== "TEXTAREA" && activeTag !== "SELECT";
+
+      if (event.key === "ArrowRight" && safeToShortcut) {
+        stepSection(1);
+      }
+
+      if (event.key === "ArrowLeft" && safeToShortcut) {
+        stepSection(-1);
+      }
+
+      if (event.key === " " && safeToShortcut) {
+        event.preventDefault();
+        randomChallengeBtn.click();
+      }
+
+      if (event.key === "Enter" && document.activeElement === promptInput) {
+        event.preventDefault();
+        analyzePrompt();
+      }
+
+      if (event.key.toLowerCase() === "s" && safeToShortcut) {
+        event.preventDefault();
+        toggleClockBtn.click();
+      }
+
+      if (event.key.toLowerCase() === "r" && safeToShortcut) {
+        event.preventDefault();
+        resetClockBtn.click();
+      }
+
+      if (event.key.toLowerCase() === "f" && safeToShortcut) {
+        event.preventDefault();
+        presentationToggleBtn.click();
+      }
+
+      if (event.key.toLowerCase() === "l" && safeToShortcut) {
+        event.preventDefault();
+        currentLang = currentLang === "en" ? "fr" : "en";
+        applyLanguage();
+      }
+    });
+
+    applyLanguage();
+    updateScores();
+    setActiveSection("learn");
+  </script>
+</body>
+</html>
